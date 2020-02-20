@@ -1,17 +1,17 @@
-package basic_test
+package logger_test
 
 import (
 	"errors"
 	"fmt"
-	"github.com/xmlking/logger"
-	"github.com/xmlking/logger/basic"
-	"github.com/xmlking/logger/log"
 	"os"
 	"testing"
+
+	"github.com/xmlking/logger"
+	"github.com/xmlking/logger/log"
 )
 
 func TestName(t *testing.T) {
-	l := basic.NewLogger()
+	l := logger.NewLogger()
 
 	if l.String() != "basic" {
 		t.Errorf("error: name expected 'basic' actual: %s", l.String())
@@ -21,7 +21,8 @@ func TestName(t *testing.T) {
 }
 
 func TestSetLevel(t *testing.T) {
-	log.SetGlobalLogger(basic.NewLogger())
+	//  defaultLogger is the default global Logger
+	//log.SetGlobalLogger(logger.DefaultLogger)
 	log.SetGlobalLevel(logger.DebugLevel)
 	log.Debugf("test show debug: %s", "debug msg")
 
@@ -30,7 +31,7 @@ func TestSetLevel(t *testing.T) {
 }
 
 func TestWithFields(t *testing.T) {
-	l := basic.NewLogger(basic.WithFields(logger.Fields{
+	l := logger.NewLogger(logger.WithFields(logger.Fields{
 		"name":  "sumo",
 		"age":   99,
 		"alive": true,
@@ -41,7 +42,7 @@ func TestWithFields(t *testing.T) {
 }
 
 func TestWithError(t *testing.T) {
-	l := basic.NewLogger(basic.WithFields(logger.Fields{
+	l := logger.NewLogger(logger.WithFields(logger.Fields{
 		"name":  "sumo",
 		"age":   99,
 		"alive": true,
@@ -52,7 +53,7 @@ func TestWithError(t *testing.T) {
 }
 
 func ExampleLog() {
-	log.SetGlobalLogger(basic.NewLogger(basic.WithOutput(os.Stdout)))
+	log.SetGlobalLogger(logger.NewLogger(logger.WithOutput(os.Stdout)))
 	log.Info("test show info: ", "msg ", true, 45.65)
 	log.Infof("test show infof: name: %s, age: %d", "sumo", 99)
 	log.Infow("test show fields", map[string]interface{}{

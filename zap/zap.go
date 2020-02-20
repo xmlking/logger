@@ -3,10 +3,12 @@ package zap
 import (
 	"context"
 	"fmt"
+	"os"
 
-	"github.com/xmlking/logger"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	"github.com/xmlking/logger"
 )
 
 type zaplog struct {
@@ -16,8 +18,16 @@ type zaplog struct {
 
 func (l *zaplog) Init(opts ...logger.Option) error {
 	var err error
+	// Default options
+	options := &Options{
+		Options: logger.Options{
+			Level:   logger.InfoLevel,
+			Fields:  make(map[string]interface{}),
+			Out:     os.Stderr,
+			Context: context.Background(),
+		},
+	}
 
-	options := &Options{logger.Options{Context: context.Background()}}
 	for _, o := range opts {
 		o(&options.Options)
 	}
@@ -32,9 +42,10 @@ func (l *zaplog) Init(opts ...logger.Option) error {
 
 	}
 
+	// Set log Level if not default
 	zapConfig.Level = zap.NewAtomicLevel()
-	if level, ok := options.Context.Value(levelKey{}).(logger.Level); ok {
-		zapConfig.Level.SetLevel(loggerToZapLevel(level))
+	if options.Level != logger.InfoLevel {
+		zapConfig.Level.SetLevel(loggerToZapLevel(options.Level))
 	}
 
 	log, err := zapConfig.Build()
@@ -42,14 +53,16 @@ func (l *zaplog) Init(opts ...logger.Option) error {
 		return err
 	}
 
-	if fields, ok := options.Context.Value(fieldsKey{}).(logger.Fields); ok {
+	// Adding seed fields if exist
+	if options.Fields != nil {
 		data := []zap.Field{}
-		for k, v := range fields {
+		for k, v := range options.Fields {
 			data = append(data, zap.Any(k, v))
 		}
 		log = log.With(data...)
 	}
 
+	// Adding namespace
 	if namespace, ok := options.Context.Value(namespaceKey{}).(string); ok {
 		log = log.With(zap.Namespace(namespace))
 	}

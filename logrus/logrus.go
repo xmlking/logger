@@ -1,21 +1,13 @@
 package logrus
 
 import (
+	"context"
 	"fmt"
-	"io"
 	"os"
 
 	"github.com/sirupsen/logrus"
-	"github.com/xmlking/logger"
-)
 
-var (
-	formatter    logrus.Formatter = new(logrus.TextFormatter)
-	lvl                           = logrus.InfoLevel
-	out          io.Writer        = os.Stderr
-	hooks                         = make(logrus.LevelHooks)
-	reportCaller                  = false
-	exit                          = os.Exit
+	"github.com/xmlking/logger"
 )
 
 type logrusLogger struct {
@@ -23,52 +15,44 @@ type logrusLogger struct {
 }
 
 func (l *logrusLogger) Init(opts ...logger.Option) error {
-	options := &Options{}
+	// Default options
+	options := &Options{
+		Options: logger.Options{
+			Level:   logger.InfoLevel,
+			Fields:  make(map[string]interface{}),
+			Out:     os.Stderr,
+			Context: context.Background(),
+		},
+		Formatter:    new(logrus.TextFormatter),
+		Hooks:        make(logrus.LevelHooks),
+		ReportCaller: false,
+		ExitFunc:     os.Exit,
+	}
+
 	for _, o := range opts {
 		o(&options.Options)
 	}
 
-	if options.Context != nil {
-		f, ok := options.Context.Value(formatterKey{}).(logrus.Formatter)
-		if ok {
-			formatter = f
-		}
-
-		l, ok := options.Context.Value(levelKey{}).(logger.Level)
-		if ok {
-			lvl = loggerToLogrusLevel(l)
-		}
-
-		o, ok := options.Context.Value(outputKey{}).(io.Writer)
-		if ok {
-			out = o
-		}
-
-		h, ok := options.Context.Value(hooksKey{}).(logrus.LevelHooks)
-		if ok {
-			hooks = h
-		}
-
-		r, ok := options.Context.Value(reportCallerKey{}).(bool)
-		if ok {
-			if r == true {
-			}
-			reportCaller = r
-		}
-
-		e, ok := options.Context.Value(exitKey{}).(func(int))
-		if ok {
-			exit = e
-		}
+	if formatter, ok := options.Context.Value(formatterKey{}).(logrus.Formatter); ok {
+		options.Formatter = formatter
+	}
+	if hs, ok := options.Context.Value(hooksKey{}).(logrus.LevelHooks); ok {
+		options.Hooks = hs
+	}
+	if caller, ok := options.Context.Value(reportCallerKey{}).(bool); ok && caller {
+		options.ReportCaller = caller
+	}
+	if exitFunction, ok := options.Context.Value(exitKey{}).(func(int)); ok {
+		options.ExitFunc = exitFunction
 	}
 
 	l.Logger = &logrus.Logger{
-		Out:          out,
-		Formatter:    formatter,
-		Hooks:        hooks,
-		Level:        lvl,
-		ExitFunc:     exit,
-		ReportCaller: reportCaller,
+		Out:          options.Out,
+		Formatter:    options.Formatter,
+		Hooks:        options.Hooks,
+		Level:        loggerToLogrusLevel(options.Level),
+		ExitFunc:     options.ExitFunc,
+		ReportCaller: options.ReportCaller,
 	}
 
 	return nil

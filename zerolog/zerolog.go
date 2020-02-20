@@ -3,7 +3,6 @@ package zerolog
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 	"runtime/debug"
 	"time"
@@ -11,80 +10,69 @@ import (
 	"github.com/rs/zerolog"
 	zlog "github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
+
 	"github.com/xmlking/logger"
 )
 
 type Mode uint8
 
 const (
-	Production Mode = iota + 1
+	Production Mode = iota
 	Development
 )
 
 type zeroLogger struct {
-	nativelogger zerolog.Logger
-	exitFunc     func(int)
+	zLog     zerolog.Logger
+	exitFunc func(int)
 }
 
 func (l *zeroLogger) Init(opts ...logger.Option) error {
-	//  It's common to set this to a file, or leave it default which is `os.Stderr`
-	var out io.Writer = os.Stderr
-	// Flag for whether to log caller info (off by default)
-	var reportCaller = false
-	// use this logger as system wide default logger
-	var useAsDefault = false
-	// The logging level the logger should log at.
-	// This defaults to 100 means not explicitly set by user
-	var level logger.Level = 100
-	var fields logger.Fields
-	var hooks []zerolog.Hook
-	var timeFormat string
-	// default Production (1)
-	var mode = Production
+	// Default options
+	options := &Options{
+		Options: logger.Options{
+			Level:   100,
+			Fields:  make(map[string]interface{}),
+			Out:     os.Stderr,
+			Context: context.Background(),
+		},
+		ReportCaller: false,
+		UseAsDefault: false,
+		Mode:         Production,
+		ExitFunc:     os.Exit,
+	}
 
-	// RESET
-	// Function to exit the application, defaults to `os.Exit()`
-	l.exitFunc = os.Exit
-	zerolog.TimeFieldFormat = time.RFC3339
-	zerolog.ErrorStackMarshaler = nil
-
-	options := &Options{logger.Options{Context: context.Background()}}
 	for _, o := range opts {
 		o(&options.Options)
 	}
 
-	if o, ok := options.Context.Value(outputKey{}).(io.Writer); ok {
-		out = o
-	}
 	if hs, ok := options.Context.Value(hooksKey{}).([]zerolog.Hook); ok {
-		hooks = hs
-	}
-	if flds, ok := options.Context.Value(fieldsKey{}).(logger.Fields); ok {
-		fields = flds
-	}
-	if lvl, ok := options.Context.Value(levelKey{}).(logger.Level); ok {
-		level = lvl
+		options.Hooks = hs
 	}
 	if tf, ok := options.Context.Value(timeFormatKey{}).(string); ok {
-		timeFormat = tf
+		options.TimeFormat = tf
 	}
 	if exitFunction, ok := options.Context.Value(exitKey{}).(func(int)); ok {
-		l.exitFunc = exitFunction
+		options.ExitFunc = exitFunction
 	}
 	if caller, ok := options.Context.Value(reportCallerKey{}).(bool); ok && caller {
-		reportCaller = caller
+		options.ReportCaller = caller
 	}
 	if useDefault, ok := options.Context.Value(useAsDefaultKey{}).(bool); ok && useDefault {
-		useAsDefault = useDefault
+		options.UseAsDefault = useDefault
 	}
 	if devMode, ok := options.Context.Value(developmentModeKey{}).(bool); ok && devMode {
-		mode = Development
+		options.Mode = Development
 	}
 	if prodMode, ok := options.Context.Value(productionModeKey{}).(bool); ok && prodMode {
-		mode = Production
+		options.Mode = Production
 	}
 
-	switch mode {
+	// RESET
+	zerolog.TimeFieldFormat = time.RFC3339
+	zerolog.ErrorStackMarshaler = nil
+	l.exitFunc = options.ExitFunc
+
+	switch options.Mode {
 	case Development:
 		zerolog.ErrorStackMarshaler = func(err error) interface{} {
 			fmt.Println(string(debug.Stack()))
@@ -92,56 +80,51 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 		}
 		consOut := zerolog.NewConsoleWriter(
 			func(w *zerolog.ConsoleWriter) {
-				if len(timeFormat) > 0 {
-					w.TimeFormat = timeFormat
+				if len(options.TimeFormat) > 0 {
+					w.TimeFormat = options.TimeFormat
 				}
-				w.Out = out
+				w.Out = options.Out
 				w.NoColor = false
 			},
 		)
 		//level = logger.DebugLevel
-		l.nativelogger = zerolog.New(consOut).
+		l.zLog = zerolog.New(consOut).
 			Level(zerolog.DebugLevel).
 			With().Timestamp().Stack().Logger()
 	default: // Production
 		zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
-		l.nativelogger = zerolog.New(out).
+		l.zLog = zerolog.New(options.Out).
 			Level(zerolog.InfoLevel).
 			With().Timestamp().Stack().Logger()
 	}
 
-	// Change  Writer if not default
-	if out != os.Stderr {
-		l.nativelogger = l.nativelogger.Output(out)
-	}
-
 	// Set log Level if not default
-	if level != 100 {
-		//zerolog.SetGlobalLevel(loggerToZerologLevel(level))
-		l.nativelogger = l.nativelogger.Level(loggerToZerologLevel(level))
+	if options.Level != 100 {
+		//zerolog.SetGlobalLevel(loggerToZerologLevel(options.Level))
+		l.zLog = l.zLog.Level(loggerToZerologLevel(options.Level))
 	}
 
 	// Adding hooks if exist
-	if reportCaller {
-		l.nativelogger = l.nativelogger.With().Caller().Logger()
+	if options.ReportCaller {
+		l.zLog = l.zLog.With().Caller().Logger()
 	}
-	for _, hook := range hooks {
-		l.nativelogger = l.nativelogger.Hook(hook)
+	for _, hook := range options.Hooks {
+		l.zLog = l.zLog.Hook(hook)
 	}
 
 	// Setting timeFormat
-	if len(timeFormat) > 0 {
-		zerolog.TimeFieldFormat = timeFormat
+	if len(options.TimeFormat) > 0 {
+		zerolog.TimeFieldFormat = options.TimeFormat
 	}
 
 	// Adding seed fields if exist
-	if fields != nil {
-		l.nativelogger = l.nativelogger.With().Fields(fields).Logger()
+	if options.Fields != nil {
+		l.zLog = l.zLog.With().Fields(options.Fields).Logger()
 	}
 
 	// Also set it as zerolog's Default logger
-	if useAsDefault {
-		zlog.Logger = l.nativelogger
+	if options.UseAsDefault {
+		zlog.Logger = l.zLog
 	}
 
 	return nil
@@ -149,11 +132,11 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 
 func (l *zeroLogger) SetLevel(level logger.Level) {
 	//zerolog.SetGlobalLevel(loggerToZerologLevel(level))
-	l.nativelogger = l.nativelogger.Level(loggerToZerologLevel(level))
+	l.zLog = l.zLog.Level(loggerToZerologLevel(level))
 }
 
 func (l *zeroLogger) Level() logger.Level {
-	return ZerologToLoggerLevel(l.nativelogger.GetLevel())
+	return ZerologToLoggerLevel(l.zLog.GetLevel())
 }
 
 func (l *zeroLogger) Log(level logger.Level, template string, fmtArgs []interface{}, fields logger.Fields) {
@@ -166,7 +149,7 @@ func (l *zeroLogger) Log(level logger.Level, template string, fmtArgs []interfac
 		msg = fmt.Sprintf(template, fmtArgs...)
 	}
 
-	l.nativelogger.WithLevel(loggerToZerologLevel(level)).Fields(fields).Msg(msg)
+	l.zLog.WithLevel(loggerToZerologLevel(level)).Fields(fields).Msg(msg)
 	// Invoke os.Exit because unlike zerolog.Logger.Fatal zerolog.Logger.WithLevel won't stop the execution.
 	if level == logger.FatalLevel {
 		l.exitFunc(1)
@@ -183,7 +166,7 @@ func (l *zeroLogger) Error(level logger.Level, template string, fmtArgs []interf
 		msg = fmt.Sprintf(template, fmtArgs...)
 	}
 
-	l.nativelogger.WithLevel(loggerToZerologLevel(level)).Stack().Err(err).Msg(msg)
+	l.zLog.WithLevel(loggerToZerologLevel(level)).Stack().Err(err).Msg(msg)
 	// Invoke os.Exit because unlike zerolog.Logger.Fatal zerolog.Logger.WithLevel won't stop the execution.
 	if level == logger.FatalLevel {
 		l.exitFunc(1)

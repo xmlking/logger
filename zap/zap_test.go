@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/pkg/errors"
+
 	"github.com/xmlking/logger"
 	"github.com/xmlking/logger/log"
 )
@@ -74,7 +75,7 @@ func TestFields(t *testing.T) {
 }
 
 func TestSubLoggerWithFields(t *testing.T) {
-	l, err := NewLogger(WithFields(logger.Fields{
+	l, err := NewLogger(logger.WithFields(logger.Fields{
 		"category": "test",
 		"alive":    true,
 	}))

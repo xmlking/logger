@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/sirupsen/logrus"
+
 	"github.com/xmlking/logger"
 	"github.com/xmlking/logger/log"
 )
@@ -20,7 +21,7 @@ func TestName(t *testing.T) {
 }
 
 func TestWithFields(t *testing.T) {
-	log.SetGlobalLogger(NewLogger(WithOutput(os.Stdout)))
+	log.SetGlobalLogger(NewLogger(logger.WithOutput(os.Stdout)))
 
 	log.Info("testing: Info")
 	log.Infof("testing: %s", "Infof")
@@ -48,7 +49,7 @@ func TestSetLevel(t *testing.T) {
 }
 
 func TestWithReportCaller(t *testing.T) {
-	log.SetGlobalLogger(NewLogger(WithReportCaller(true)))
+	log.SetGlobalLogger(NewLogger(ReportCaller()))
 
 	log.Infof("testing: %s", "WithReportCaller")
 }

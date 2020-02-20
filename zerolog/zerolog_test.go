@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/rs/zerolog"
+
 	"github.com/xmlking/logger"
 	"github.com/xmlking/logger/log"
 )
@@ -24,7 +25,7 @@ func TestName(t *testing.T) {
 }
 
 func ExampleWithOut() {
-	log.SetGlobalLogger(NewLogger(WithOutput(os.Stdout), WithTimeFormat("ddd"), WithProductionMode()))
+	log.SetGlobalLogger(NewLogger(logger.WithOutput(os.Stdout), WithTimeFormat("ddd"), WithProductionMode()))
 
 	log.Info("testing: Info")
 	log.Infof("testing: %s", "Infof")
@@ -56,7 +57,7 @@ func TestWithReportCaller(t *testing.T) {
 }
 
 func TestWithOutput(t *testing.T) {
-	log.SetGlobalLogger(NewLogger(WithOutput(os.Stdout)))
+	log.SetGlobalLogger(NewLogger(logger.WithOutput(os.Stdout)))
 
 	log.Infof("testing: %s", "WithOutput")
 }
@@ -68,7 +69,7 @@ func TestWithDevelopmentMode(t *testing.T) {
 }
 
 func TestSubLoggerWithMoreFields(t *testing.T) {
-	l := NewLogger(WithFields(logger.Fields{
+	l := NewLogger(logger.WithFields(logger.Fields{
 		"component": "gorm",
 	}))
 	log.SetGlobalLogger(l)

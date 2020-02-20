@@ -2,11 +2,10 @@ package log
 
 import (
 	"github.com/xmlking/logger"
-	"github.com/xmlking/logger/basic"
 )
 
 // defaultLogger is the default global Logger
-var globalLogger logger.Logger = basic.NewLogger()
+var globalLogger logger.Logger = logger.DefaultLogger
 
 func SetGlobalLogger(logger logger.Logger) {
 	globalLogger = logger
@@ -14,16 +13,6 @@ func SetGlobalLogger(logger logger.Logger) {
 
 func SetGlobalLevel(lvl logger.Level) {
 	globalLogger.SetLevel(lvl)
-}
-
-func Info(args ...interface{}) {
-	globalLogger.Log(logger.InfoLevel, "", args, nil)
-}
-func Infof(template string, args ...interface{}) {
-	globalLogger.Log(logger.InfoLevel, template, args, nil)
-}
-func Infow(msg string, fields logger.Fields) {
-	globalLogger.Log(logger.InfoLevel, msg, nil, fields)
 }
 
 func Trace(args ...interface{}) {
@@ -44,6 +33,16 @@ func Debugf(template string, args ...interface{}) {
 }
 func Debugw(msg string, fields logger.Fields) {
 	globalLogger.Log(logger.DebugLevel, msg, nil, fields)
+}
+
+func Info(args ...interface{}) {
+	globalLogger.Log(logger.InfoLevel, "", args, nil)
+}
+func Infof(template string, args ...interface{}) {
+	globalLogger.Log(logger.InfoLevel, template, args, nil)
+}
+func Infow(msg string, fields logger.Fields) {
+	globalLogger.Log(logger.InfoLevel, msg, nil, fields)
 }
 
 func Warn(args ...interface{}) {
