@@ -4,8 +4,8 @@ import (
 	"context"
 	"io"
 
-	log "github.com/xmlking/logger"
 	"github.com/sirupsen/logrus"
+	log "github.com/xmlking/logger"
 )
 
 type formatterKey struct{}

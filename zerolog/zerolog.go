@@ -40,7 +40,7 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 	var hooks []zerolog.Hook
 	var timeFormat string
 	// default Production (1)
-	var mode Mode = Production
+	var mode = Production
 
 	// RESET
 	// Function to exit the application, defaults to `os.Exit()`

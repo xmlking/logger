@@ -4,8 +4,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/xmlking/logger"
 	"github.com/sirupsen/logrus"
+	"github.com/xmlking/logger"
+	"github.com/xmlking/logger/log"
 )
 
 func TestName(t *testing.T) {
@@ -19,11 +20,11 @@ func TestName(t *testing.T) {
 }
 
 func TestWithFields(t *testing.T) {
-	logger.SetGlobalLogger(NewLogger(WithOutput(os.Stdout)))
+	log.SetGlobalLogger(NewLogger(WithOutput(os.Stdout)))
 
-	logger.Info("testing: Info")
-	logger.Infof("testing: %s", "Infof")
-	logger.Infow("testing: Infow", logger.Fields{
+	log.Info("testing: Info")
+	log.Infof("testing: %s", "Infof")
+	log.Infow("testing: Infow", logger.Fields{
 		"sumo":  "demo",
 		"human": true,
 		"age":   99,
@@ -31,23 +32,23 @@ func TestWithFields(t *testing.T) {
 }
 
 func TestJSON(t *testing.T) {
-	logger.SetGlobalLogger(NewLogger(WithJSONFormatter(&logrus.JSONFormatter{})))
+	log.SetGlobalLogger(NewLogger(WithJSONFormatter(&logrus.JSONFormatter{})))
 
-	logger.Infof("test logf: %s", "name")
+	log.Infof("test logf: %s", "name")
 }
 
 func TestSetLevel(t *testing.T) {
-	logger.SetGlobalLogger(NewLogger())
+	log.SetGlobalLogger(NewLogger())
 
-	logger.SetGlobalLevel(logger.DebugLevel)
-	logger.Debugf("test show debug: %s", "debug msg")
+	log.SetGlobalLevel(logger.DebugLevel)
+	log.Debugf("test show debug: %s", "debug msg")
 
-	logger.SetGlobalLevel(logger.InfoLevel)
-	logger.Debugf("test non-show debug: %s", "debug msg")
+	log.SetGlobalLevel(logger.InfoLevel)
+	log.Debugf("test non-show debug: %s", "debug msg")
 }
 
 func TestWithReportCaller(t *testing.T) {
-	logger.SetGlobalLogger(NewLogger(WithReportCaller(true)))
+	log.SetGlobalLogger(NewLogger(WithReportCaller(true)))
 
-	logger.Infof("testing: %s", "WithReportCaller")
+	log.Infof("testing: %s", "WithReportCaller")
 }

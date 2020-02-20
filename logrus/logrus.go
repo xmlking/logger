@@ -5,8 +5,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/xmlking/logger"
 	"github.com/sirupsen/logrus"
+	"github.com/xmlking/logger"
 )
 
 var (

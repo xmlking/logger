@@ -5,6 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/xmlking/logger"
+	"github.com/xmlking/logger/log"
 )
 
 func TestName(t *testing.T) {
@@ -25,9 +26,9 @@ func TestLogf(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	logger.SetGlobalLogger(l)
+	log.SetGlobalLogger(l)
 
-	logger.Infof("test logf: %s", "name")
+	log.Infof("test logf: %s", "name")
 }
 
 func TestSetLevel(t *testing.T) {
@@ -36,13 +37,13 @@ func TestSetLevel(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	logger.SetGlobalLogger(l)
+	log.SetGlobalLogger(l)
 
-	logger.SetGlobalLevel(logger.DebugLevel)
-	logger.Debugf("test show debug: %s", "debug msg")
+	log.SetGlobalLevel(logger.DebugLevel)
+	log.Debugf("test show debug: %s", "debug msg")
 
-	logger.SetGlobalLevel(logger.InfoLevel)
-	logger.Debugf("test non-show debug: %s", "debug msg")
+	log.SetGlobalLevel(logger.InfoLevel)
+	log.Debugf("test non-show debug: %s", "debug msg")
 }
 
 func TestError(t *testing.T) {
@@ -52,9 +53,9 @@ func TestError(t *testing.T) {
 	}
 
 	err2 := errors.Wrap(errors.New("error message"), "from error")
-	logger.SetGlobalLogger(l)
-	logger.Error("test Error")
-	logger.Errorw("test Errorw", err2)
+	log.SetGlobalLogger(l)
+	log.Error("test Error")
+	log.Errorw("test Errorw", err2)
 }
 
 func TestFields(t *testing.T) {
@@ -63,9 +64,9 @@ func TestFields(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	logger.SetGlobalLogger(l)
+	log.SetGlobalLogger(l)
 
-	logger.Infow("testing: Fields", logger.Fields{
+	log.Infow("testing: Fields", logger.Fields{
 		"sumo":  "demo",
 		"human": true,
 		"age":   99,
@@ -81,8 +82,8 @@ func TestSubLoggerWithFields(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	logger.SetGlobalLogger(l)
-	logger.Infow("testing: WithFields", logger.Fields{
+	log.SetGlobalLogger(l)
+	log.Infow("testing: WithFields", logger.Fields{
 		"name":  "demo",
 		"human": true,
 		"age":   77,
@@ -97,8 +98,8 @@ func TestWithNamespace(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	logger.SetGlobalLogger(l)
-	logger.Infow("testing: WithFields", logger.Fields{
+	log.SetGlobalLogger(l)
+	log.Infow("testing: WithFields", logger.Fields{
 		"name":  "demo",
 		"human": true,
 		"age":   77,
