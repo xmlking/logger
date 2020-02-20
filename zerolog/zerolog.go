@@ -100,7 +100,7 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 
 	// Set log Level if not default
 	if options.Level != 100 {
-		//zerolog.SetGlobalLevel(loggerToZerologLevel(options.Level))
+		zerolog.SetGlobalLevel(loggerToZerologLevel(options.Level))
 		l.zLog = l.zLog.Level(loggerToZerologLevel(options.Level))
 	}
 
@@ -128,15 +128,6 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 	}
 
 	return nil
-}
-
-func (l *zeroLogger) SetLevel(level logger.Level) {
-	//zerolog.SetGlobalLevel(loggerToZerologLevel(level))
-	l.zLog = l.zLog.Level(loggerToZerologLevel(level))
-}
-
-func (l *zeroLogger) Level() logger.Level {
-	return ZerologToLoggerLevel(l.zLog.GetLevel())
 }
 
 func (l *zeroLogger) Log(level logger.Level, template string, fmtArgs []interface{}, fields logger.Fields) {

@@ -21,10 +21,6 @@ type Fields map[string]interface{}
 type Logger interface {
 	// Init initializes options
 	Init(options ...Option) error
-	// Level returns the logging level
-	Level() Level
-	// SetLevel updates the logging level.
-	SetLevel(Level)
 	// log at given level with message, fmtArgs and context fields
 	Log(level Level, template string, fmtArgs []interface{}, fields Fields)
 	// log error at given level with message, fmtArgs and stack if enabled.

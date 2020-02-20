@@ -58,14 +58,6 @@ func (l *logrusLogger) Init(opts ...logger.Option) error {
 	return nil
 }
 
-func (l *logrusLogger) SetLevel(level logger.Level) {
-	l.Logger.SetLevel(loggerToLogrusLevel(level))
-}
-
-func (l *logrusLogger) Level() logger.Level {
-	return logrusToLoggerLevel(l.Logger.Level)
-}
-
 func (l *logrusLogger) String() string {
 	return "logrus"
 }

@@ -12,7 +12,9 @@ func SetGlobalLogger(logger logger.Logger) {
 }
 
 func SetGlobalLevel(lvl logger.Level) {
-	globalLogger.SetLevel(lvl)
+	if err := globalLogger.Init(logger.WithLevel(lvl)); err != nil {
+		print(err)
+	}
 }
 
 func Trace(args ...interface{}) {
