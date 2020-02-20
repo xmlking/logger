@@ -25,7 +25,11 @@ func TestName(t *testing.T) {
 }
 
 func ExampleWithOut() {
-	log.SetGlobalLogger(NewLogger(logger.WithOutput(os.Stdout), WithTimeFormat("ddd"), WithProductionMode()))
+	log.SetGlobalLogger(NewLogger(
+		logger.WithOutput(os.Stdout),
+		WithTimeFormat("ddd"),
+		WithProductionMode(),
+	))
 
 	log.Info("testing: Info")
 	log.Infof("testing: %s", "Infof")
