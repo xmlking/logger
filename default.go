@@ -9,7 +9,7 @@ import (
 )
 
 type defaultLogger struct {
-	opts  Options
+	opts Options
 }
 
 // Init(opts...) should only overwrite provided options
@@ -60,7 +60,7 @@ func (l *defaultLogger) Error(level Level, template string, fmtArgs []interface{
 	}
 
 	fields := mergeMaps(l.opts.Fields, map[string]interface{}{
-		"level": level.String(),
+		"level":   level.String(),
 		"message": msg,
 		"error":   err.Error(),
 	})
@@ -102,4 +102,3 @@ func NewLogger(opts ...Option) Logger {
 	_ = l.Init(opts...)
 	return l
 }
-

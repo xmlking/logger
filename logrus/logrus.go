@@ -12,7 +12,7 @@ import (
 
 type logrusLogger struct {
 	*logrus.Logger
-	opts  Options
+	opts Options
 }
 
 func (l *logrusLogger) Init(opts ...logger.Option) error {

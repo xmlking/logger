@@ -27,7 +27,7 @@ func TestLogf(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	logger.DefaultLogger =  l
+	logger.DefaultLogger = l
 	log.Infof("test logf: %s", "name")
 }
 
@@ -36,7 +36,7 @@ func TestSetLevel(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	logger.DefaultLogger =  l
+	logger.DefaultLogger = l
 
 	log.SetGlobalLevel(logger.DebugLevel)
 	log.Debugf("test show debug: %s", "debug msg")

@@ -31,7 +31,7 @@ func Log(level Level, template string, fmtArgs []interface{}, fields Fields) {
 }
 
 func Error(level Level, template string, fmtArgs []interface{}, err error) {
-	 DefaultLogger.Error(level, template, fmtArgs, err)
+	DefaultLogger.Error(level, template, fmtArgs, err)
 }
 
 func String() string {

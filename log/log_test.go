@@ -40,8 +40,6 @@ func TestOptions(t *testing.T) {
 	subLogger.Log(logger.WarnLevel, "Logging with subLogger: Default Options: %v", []interface{}{logger.DefaultLogger.Options()}, nil)
 }
 
-
-
 func TestWithFields(t *testing.T) {
 	logger.DefaultLogger = logger.NewLogger(logger.WithFields(logger.Fields{
 		"name":  "sumo",
@@ -50,7 +48,7 @@ func TestWithFields(t *testing.T) {
 	}))
 	log.Info("test with fields")
 	log.Infow("test with fields", map[string]interface{}{"weight": 3.14159265359, "name": "demo"})
-	log.Infow("testing replace", logger.Fields{"name":  "sumo1"})
+	log.Infow("testing replace", logger.Fields{"name": "sumo1"})
 }
 
 func TestWithError(t *testing.T) {

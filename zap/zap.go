@@ -12,9 +12,9 @@ import (
 )
 
 type zaplog struct {
-	cfg zap.Config
-	zap *zap.Logger
-	opts  logger.Options
+	cfg  zap.Config
+	zap  *zap.Logger
+	opts logger.Options
 }
 
 func (l *zaplog) Init(opts ...logger.Option) error {
@@ -122,12 +122,11 @@ func (l *zaplog) Options() logger.Options {
 func NewLogger(opts ...logger.Option) (logger.Logger, error) {
 	// Default options
 	options := logger.Options{
-			Level:   logger.InfoLevel,
-			Fields:  make(map[string]interface{}),
-			Out:     os.Stderr,
-			Context: context.Background(),
-		}
-
+		Level:   logger.InfoLevel,
+		Fields:  make(map[string]interface{}),
+		Out:     os.Stderr,
+		Context: context.Background(),
+	}
 
 	l := &zaplog{opts: options}
 	if err := l.Init(opts...); err != nil {

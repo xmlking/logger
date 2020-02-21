@@ -61,10 +61,10 @@ func ParseLevel(levelStr string) (Level, error) {
 		return WarnLevel, nil
 	case ErrorLevel.String():
 		return ErrorLevel, nil
-	case FatalLevel.String():
-		return FatalLevel, nil
 	case PanicLevel.String():
 		return PanicLevel, nil
+	case FatalLevel.String():
+		return FatalLevel, nil
 	}
 	return InfoLevel, fmt.Errorf("Unknown Level String: '%s', defaulting to NoLevel", levelStr)
 }

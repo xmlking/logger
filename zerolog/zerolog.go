@@ -22,8 +22,8 @@ const (
 )
 
 type zeroLogger struct {
-	zLog     zerolog.Logger
-	opts  Options
+	zLog zerolog.Logger
+	opts Options
 }
 
 func (l *zeroLogger) Init(opts ...logger.Option) error {
