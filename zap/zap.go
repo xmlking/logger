@@ -14,38 +14,30 @@ import (
 type zaplog struct {
 	cfg zap.Config
 	zap *zap.Logger
+	opts  logger.Options
 }
 
 func (l *zaplog) Init(opts ...logger.Option) error {
 	var err error
-	// Default options
-	options := &Options{
-		Options: logger.Options{
-			Level:   logger.InfoLevel,
-			Fields:  make(map[string]interface{}),
-			Out:     os.Stderr,
-			Context: context.Background(),
-		},
-	}
 
 	for _, o := range opts {
-		o(&options.Options)
+		o(&l.opts)
 	}
 
 	zapConfig := zap.NewProductionConfig()
-	if zconfig, ok := options.Context.Value(configKey{}).(zap.Config); ok {
+	if zconfig, ok := l.opts.Context.Value(configKey{}).(zap.Config); ok {
 		zapConfig = zconfig
 	}
 
-	if zcconfig, ok := options.Context.Value(encoderConfigKey{}).(zapcore.EncoderConfig); ok {
+	if zcconfig, ok := l.opts.Context.Value(encoderConfigKey{}).(zapcore.EncoderConfig); ok {
 		zapConfig.EncoderConfig = zcconfig
 
 	}
 
 	// Set log Level if not default
 	zapConfig.Level = zap.NewAtomicLevel()
-	if options.Level != logger.InfoLevel {
-		zapConfig.Level.SetLevel(loggerToZapLevel(options.Level))
+	if l.opts.Level != logger.InfoLevel {
+		zapConfig.Level.SetLevel(loggerToZapLevel(l.opts.Level))
 	}
 
 	log, err := zapConfig.Build()
@@ -54,16 +46,16 @@ func (l *zaplog) Init(opts ...logger.Option) error {
 	}
 
 	// Adding seed fields if exist
-	if options.Fields != nil {
+	if l.opts.Fields != nil {
 		data := []zap.Field{}
-		for k, v := range options.Fields {
+		for k, v := range l.opts.Fields {
 			data = append(data, zap.Any(k, v))
 		}
 		log = log.With(data...)
 	}
 
 	// Adding namespace
-	if namespace, ok := options.Context.Value(namespaceKey{}).(string); ok {
+	if namespace, ok := l.opts.Context.Value(namespaceKey{}).(string); ok {
 		log = log.With(zap.Namespace(namespace))
 	}
 
@@ -122,9 +114,22 @@ func (l *zaplog) String() string {
 	return "zap"
 }
 
+func (l *zaplog) Options() logger.Options {
+	return l.opts
+}
+
 // New builds a new logger based on options
 func NewLogger(opts ...logger.Option) (logger.Logger, error) {
-	l := &zaplog{}
+	// Default options
+	options := logger.Options{
+			Level:   logger.InfoLevel,
+			Fields:  make(map[string]interface{}),
+			Out:     os.Stderr,
+			Context: context.Background(),
+		}
+
+
+	l := &zaplog{opts: options}
 	if err := l.Init(opts...); err != nil {
 		return nil, err
 	}

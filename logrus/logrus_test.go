@@ -21,7 +21,7 @@ func TestName(t *testing.T) {
 }
 
 func TestWithFields(t *testing.T) {
-	log.SetGlobalLogger(NewLogger(logger.WithOutput(os.Stdout)))
+	logger.DefaultLogger = NewLogger(logger.WithOutput(os.Stdout))
 
 	log.Info("testing: Info")
 	log.Infof("testing: %s", "Infof")
@@ -33,13 +33,13 @@ func TestWithFields(t *testing.T) {
 }
 
 func TestJSON(t *testing.T) {
-	log.SetGlobalLogger(NewLogger(WithJSONFormatter(&logrus.JSONFormatter{})))
+	logger.DefaultLogger = NewLogger(WithJSONFormatter(&logrus.JSONFormatter{}))
 
 	log.Infof("test logf: %s", "name")
 }
 
 func TestSetLevel(t *testing.T) {
-	log.SetGlobalLogger(NewLogger())
+	logger.DefaultLogger = NewLogger()
 
 	log.SetGlobalLevel(logger.DebugLevel)
 	log.Debugf("test show debug: %s", "debug msg")
@@ -49,7 +49,7 @@ func TestSetLevel(t *testing.T) {
 }
 
 func TestWithReportCaller(t *testing.T) {
-	log.SetGlobalLogger(NewLogger(ReportCaller()))
+	logger.DefaultLogger = NewLogger(ReportCaller())
 
 	log.Infof("testing: %s", "WithReportCaller")
 }

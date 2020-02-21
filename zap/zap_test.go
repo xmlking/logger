@@ -27,8 +27,7 @@ func TestLogf(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	log.SetGlobalLogger(l)
-
+	logger.DefaultLogger =  l
 	log.Infof("test logf: %s", "name")
 }
 
@@ -37,8 +36,7 @@ func TestSetLevel(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	log.SetGlobalLogger(l)
+	logger.DefaultLogger =  l
 
 	log.SetGlobalLevel(logger.DebugLevel)
 	log.Debugf("test show debug: %s", "debug msg")
@@ -52,9 +50,9 @@ func TestError(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	logger.DefaultLogger = l
 
 	err2 := errors.Wrap(errors.New("error message"), "from error")
-	log.SetGlobalLogger(l)
 	log.Error("test Error")
 	log.Errorw("test Errorw", err2)
 }
@@ -64,8 +62,7 @@ func TestFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	log.SetGlobalLogger(l)
+	logger.DefaultLogger = l
 
 	log.Infow("testing: Fields", logger.Fields{
 		"sumo":  "demo",
@@ -82,8 +79,8 @@ func TestSubLoggerWithFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	logger.DefaultLogger = l
 
-	log.SetGlobalLogger(l)
 	log.Infow("testing: WithFields", logger.Fields{
 		"name":  "demo",
 		"human": true,
@@ -98,8 +95,8 @@ func TestWithNamespace(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	logger.DefaultLogger = l
 
-	log.SetGlobalLogger(l)
 	log.Infow("testing: WithFields", logger.Fields{
 		"name":  "demo",
 		"human": true,

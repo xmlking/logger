@@ -25,11 +25,11 @@ func TestName(t *testing.T) {
 }
 
 func ExampleWithOut() {
-	log.SetGlobalLogger(NewLogger(
+	logger.DefaultLogger = NewLogger(
 		logger.WithOutput(os.Stdout),
 		WithTimeFormat("ddd"),
 		WithProductionMode(),
-	))
+	)
 
 	log.Info("testing: Info")
 	log.Infof("testing: %s", "Infof")
@@ -45,7 +45,7 @@ func ExampleWithOut() {
 }
 
 func TestSetLevel(t *testing.T) {
-	log.SetGlobalLogger(NewLogger())
+	logger.DefaultLogger = NewLogger()
 
 	log.SetGlobalLevel(logger.DebugLevel)
 	log.Debugf("test show debug: %s", "debug msg")
@@ -55,19 +55,19 @@ func TestSetLevel(t *testing.T) {
 }
 
 func TestWithReportCaller(t *testing.T) {
-	log.SetGlobalLogger(NewLogger(ReportCaller()))
+	logger.DefaultLogger = NewLogger(ReportCaller())
 
 	log.Infof("testing: %s", "WithReportCaller")
 }
 
 func TestWithOutput(t *testing.T) {
-	log.SetGlobalLogger(NewLogger(logger.WithOutput(os.Stdout)))
+	logger.DefaultLogger = NewLogger(logger.WithOutput(os.Stdout))
 
 	log.Infof("testing: %s", "WithOutput")
 }
 
 func TestWithDevelopmentMode(t *testing.T) {
-	log.SetGlobalLogger(NewLogger(WithDevelopmentMode(), WithTimeFormat(time.Kitchen)))
+	logger.DefaultLogger = NewLogger(WithDevelopmentMode(), WithTimeFormat(time.Kitchen))
 
 	log.Infof("testing: %s", "DevelopmentMode")
 }
@@ -76,7 +76,7 @@ func TestSubLoggerWithMoreFields(t *testing.T) {
 	l := NewLogger(logger.WithFields(logger.Fields{
 		"component": "gorm",
 	}))
-	log.SetGlobalLogger(l)
+	logger.DefaultLogger = l
 	log.Infow("testing: WithFields", logger.Fields{
 		"name":  "demo",
 		"human": true,
@@ -87,7 +87,7 @@ func TestSubLoggerWithMoreFields(t *testing.T) {
 }
 
 func TestWithError(t *testing.T) {
-	log.SetGlobalLogger(NewLogger())
+	logger.DefaultLogger = NewLogger()
 	err := errors.Wrap(errors.New("error message"), "from error")
 	log.Error("test with error")
 	log.Errorw("test with error", err)
@@ -102,7 +102,7 @@ func TestWithHooks(t *testing.T) {
 		e.Str("test", "logged")
 	})
 
-	log.SetGlobalLogger(NewLogger(WithHooks([]zerolog.Hook{simpleHook})))
+	logger.DefaultLogger = NewLogger(WithHooks([]zerolog.Hook{simpleHook}))
 
 	log.Infof("testing: %s", "WithHooks")
 }

@@ -12,47 +12,34 @@ import (
 
 type logrusLogger struct {
 	*logrus.Logger
+	opts  Options
 }
 
 func (l *logrusLogger) Init(opts ...logger.Option) error {
-	// Default options
-	options := &Options{
-		Options: logger.Options{
-			Level:   logger.InfoLevel,
-			Fields:  make(map[string]interface{}),
-			Out:     os.Stderr,
-			Context: context.Background(),
-		},
-		Formatter:    new(logrus.TextFormatter),
-		Hooks:        make(logrus.LevelHooks),
-		ReportCaller: false,
-		ExitFunc:     os.Exit,
-	}
-
 	for _, o := range opts {
-		o(&options.Options)
+		o(&l.opts.Options)
 	}
 
-	if formatter, ok := options.Context.Value(formatterKey{}).(logrus.Formatter); ok {
-		options.Formatter = formatter
+	if formatter, ok := l.opts.Context.Value(formatterKey{}).(logrus.Formatter); ok {
+		l.opts.Formatter = formatter
 	}
-	if hs, ok := options.Context.Value(hooksKey{}).(logrus.LevelHooks); ok {
-		options.Hooks = hs
+	if hs, ok := l.opts.Context.Value(hooksKey{}).(logrus.LevelHooks); ok {
+		l.opts.Hooks = hs
 	}
-	if caller, ok := options.Context.Value(reportCallerKey{}).(bool); ok && caller {
-		options.ReportCaller = caller
+	if caller, ok := l.opts.Context.Value(reportCallerKey{}).(bool); ok && caller {
+		l.opts.ReportCaller = caller
 	}
-	if exitFunction, ok := options.Context.Value(exitKey{}).(func(int)); ok {
-		options.ExitFunc = exitFunction
+	if exitFunction, ok := l.opts.Context.Value(exitKey{}).(func(int)); ok {
+		l.opts.ExitFunc = exitFunction
 	}
 
 	l.Logger = &logrus.Logger{
-		Out:          options.Out,
-		Formatter:    options.Formatter,
-		Hooks:        options.Hooks,
-		Level:        loggerToLogrusLevel(options.Level),
-		ExitFunc:     options.ExitFunc,
-		ReportCaller: options.ReportCaller,
+		Out:          l.opts.Out,
+		Formatter:    l.opts.Formatter,
+		Hooks:        l.opts.Hooks,
+		Level:        loggerToLogrusLevel(l.opts.Level),
+		ExitFunc:     l.opts.ExitFunc,
+		ReportCaller: l.opts.ReportCaller,
 	}
 
 	return nil
@@ -88,9 +75,27 @@ func (l *logrusLogger) Error(level logger.Level, template string, fmtArgs []inte
 	l.Logger.WithError(err).Log(loggerToLogrusLevel(level), msg)
 }
 
+func (l *logrusLogger) Options() logger.Options {
+	// FIXME: How to return full opts?
+	return l.opts.Options
+}
+
 // New builds a new logger based on options
 func NewLogger(opts ...logger.Option) logger.Logger {
-	l := &logrusLogger{}
+	// Default options
+	options := Options{
+		Options: logger.Options{
+			Level:   logger.InfoLevel,
+			Fields:  make(map[string]interface{}),
+			Out:     os.Stderr,
+			Context: context.Background(),
+		},
+		Formatter:    new(logrus.TextFormatter),
+		Hooks:        make(logrus.LevelHooks),
+		ReportCaller: false,
+		ExitFunc:     os.Exit,
+	}
+	l := &logrusLogger{opts: options}
 	_ = l.Init(opts...)
 	return l
 }
