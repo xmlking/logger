@@ -19,6 +19,7 @@ type Mode uint8
 const (
 	Production Mode = iota
 	Development
+	GCP
 )
 
 type zeroLogger struct {
@@ -52,10 +53,16 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 	if prodMode, ok := l.opts.Context.Value(productionModeKey{}).(bool); ok && prodMode {
 		l.opts.Mode = Production
 	}
+	if gcpMode, ok := l.opts.Context.Value(gcpModeKey{}).(bool); ok && gcpMode {
+		l.opts.Mode = GCP
+	}
 
 	// RESET
 	zerolog.TimeFieldFormat = time.RFC3339
 	zerolog.ErrorStackMarshaler = nil
+	zerolog.LevelFieldName = "level"
+	zerolog.TimestampFieldName = "time"
+	zerolog.LevelFieldMarshalFunc = func(l zerolog.Level) string { return l.String() }
 
 	switch l.opts.Mode {
 	case Development:
@@ -76,6 +83,16 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 		l.zLog = zerolog.New(consOut).
 			Level(zerolog.DebugLevel).
 			With().Timestamp().Stack().Logger()
+	case GCP:
+		zerolog.TimestampFieldName = "timestamp"
+		zerolog.TimeFieldFormat = time.RFC3339Nano
+		zerolog.LevelFieldName = "severity"
+		zerolog.LevelFieldMarshalFunc = LevelToSeverity
+		//l.opts.Hooks = append(l.opts.Hooks, StackdriverSeverityHook{})
+
+		l.zLog = zerolog.New(l.opts.Out).
+			Level(zerolog.InfoLevel).
+			With().Timestamp().Stack().Logger()
 	default: // Production
 		zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 		l.zLog = zerolog.New(l.opts.Out).
@@ -91,7 +108,15 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 
 	// Adding hooks if exist
 	if l.opts.ReportCaller {
-		l.zLog = l.zLog.With().Caller().Logger()
+		if l.opts.Mode == GCP {
+			ch := CallerHook{}
+			if !contains(l.opts.Hooks, ch) {
+				l.opts.Hooks = append(l.opts.Hooks, ch)
+			}
+		} else {
+			l.zLog = l.zLog.With().Caller().Logger()
+		}
+
 	}
 	for _, hook := range l.opts.Hooks {
 		l.zLog = l.zLog.Hook(hook)
@@ -219,4 +244,13 @@ func ZerologToLoggerLevel(level zerolog.Level) logger.Level {
 	default:
 		return logger.InfoLevel
 	}
+}
+
+func contains(hooks []zerolog.Hook, elem zerolog.Hook) bool {
+	for _, hook := range hooks {
+		if hook == elem {
+			return true
+		}
+	}
+	return false
 }
