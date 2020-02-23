@@ -11,7 +11,7 @@ type Options struct {
 	// The logging level the logger should log at. default is `InfoLevel`
 	Level Level
 	// fields to always be logged
-	Fields Fields
+	Fields map[string]interface{}
 	// It's common to set this to a file, or leave it default which is `os.Stderr`
 	Out io.Writer
 	// Alternative options
@@ -19,7 +19,7 @@ type Options struct {
 }
 
 // WithFields set default fields for the logger
-func WithFields(fields Fields) Option {
+func WithFields(fields map[string]interface{}) Option {
 	return func(args *Options) {
 		args.Fields = fields
 	}

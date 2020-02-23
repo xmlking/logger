@@ -28,38 +28,43 @@ func TestSetLevel(t *testing.T) {
 	log.Debugf("test non-show debug: %s", "debug msg")
 }
 
-func TestOptions(t *testing.T) {
-	log.Infof("Default Options: %v", logger.DefaultLogger.Options())
-
-	subLogger := logger.NewLogger(logger.WithFields(logger.Fields{
+func TestSubLogger(t *testing.T) {
+	log.Infof("Logging with Default Options: %v", logger.DefaultLogger.Options())
+	subLogger := logger.NewLogger(logger.WithFields(map[string]interface{}{
 		"name":  "sumo",
 		"age":   99,
 		"alive": true,
 	}))
-	log.Infof("Modified Options: %v", subLogger.Options())
-	subLogger.Log(logger.WarnLevel, "Logging with subLogger: Default Options: %v", []interface{}{logger.DefaultLogger.Options()}, nil)
+	subLogger.Log(logger.WarnLevel, "Logging with subLogger Options: %v", []interface{}{subLogger.Options()}, nil)
+	log.Warnf("Logging with Default Options: %v", logger.DefaultLogger.Options())
 }
 
 func TestWithFields(t *testing.T) {
-	logger.DefaultLogger = logger.NewLogger(logger.WithFields(logger.Fields{
+	logger.DefaultLogger = logger.NewLogger(logger.WithFields(map[string]interface{}{
 		"name":  "sumo",
 		"age":   99,
 		"alive": true,
 	}))
-	log.Info("test with fields")
-	log.Infow("test with fields", map[string]interface{}{"weight": 3.14159265359, "name": "demo"})
-	log.Infow("testing replace", logger.Fields{"name": "sumo1"})
+	log.Info("test with default fields")
+	log.Infow("test with extra fields", map[string]interface{}{"weight": 3.14159265359, "name": "demo"})
+	log.Infow("test with duplicate fields", map[string]interface{}{"name": "sumo1"})
 }
 
 func TestWithError(t *testing.T) {
-	logger.DefaultLogger = logger.NewLogger(logger.WithFields(logger.Fields{
+	log.Error("TestWithError")
+	log.Errorf("testing: %s", "TestWithError")
+	log.Errorw("TestWithError", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+}
+
+func TestWithErrorAndDefaultFields(t *testing.T) {
+	logger.DefaultLogger = logger.NewLogger(logger.WithFields(map[string]interface{}{
 		"name":  "sumo",
 		"age":   99,
 		"alive": true,
 	}))
-	log.Error("test with fields")
-	log.Errorw("test with fields", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
-	log.Infof("testing: %s", "TestWithError")
+	log.Error("TestWithErrorAndDefaultFields")
+	log.Errorf("testing: %s", "TestWithErrorAndDefaultFields")
+	log.Errorw("TestWithErrorAndDefaultFields", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
 }
 
 func ExampleLog() {

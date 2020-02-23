@@ -10,7 +10,7 @@ func Trace(args ...interface{}) {
 func Tracef(template string, args ...interface{}) {
 	logger.Log(logger.TraceLevel, template, args, nil)
 }
-func Tracew(msg string, fields logger.Fields) {
+func Tracew(msg string, fields map[string]interface{}) {
 	logger.Log(logger.TraceLevel, msg, nil, fields)
 }
 
@@ -20,7 +20,7 @@ func Debug(args ...interface{}) {
 func Debugf(template string, args ...interface{}) {
 	logger.Log(logger.DebugLevel, template, args, nil)
 }
-func Debugw(msg string, fields logger.Fields) {
+func Debugw(msg string, fields map[string]interface{}) {
 	logger.Log(logger.DebugLevel, msg, nil, fields)
 }
 
@@ -30,7 +30,7 @@ func Info(args ...interface{}) {
 func Infof(template string, args ...interface{}) {
 	logger.Log(logger.InfoLevel, template, args, nil)
 }
-func Infow(msg string, fields logger.Fields) {
+func Infow(msg string, fields map[string]interface{}) {
 	logger.Log(logger.InfoLevel, msg, nil, fields)
 }
 
@@ -40,7 +40,7 @@ func Warn(args ...interface{}) {
 func Warnf(template string, args ...interface{}) {
 	logger.Log(logger.WarnLevel, template, args, nil)
 }
-func Warnw(msg string, fields logger.Fields) {
+func Warnw(msg string, fields map[string]interface{}) {
 	logger.Log(logger.WarnLevel, msg, nil, fields)
 }
 
@@ -60,7 +60,7 @@ func Panic(args ...interface{}) {
 func Panicf(template string, args ...interface{}) {
 	logger.Log(logger.PanicLevel, template, args, nil)
 }
-func Panicw(msg string, fields logger.Fields) {
+func Panicw(msg string, fields map[string]interface{}) {
 	logger.Log(logger.PanicLevel, msg, nil, fields)
 }
 
@@ -70,6 +70,6 @@ func Fatal(args ...interface{}) {
 func Fatalf(template string, args ...interface{}) {
 	logger.Log(logger.FatalLevel, template, args, nil)
 }
-func Fatalw(msg string, fields logger.Fields) {
+func Fatalw(msg string, fields map[string]interface{}) {
 	logger.Log(logger.FatalLevel, msg, nil, fields)
 }

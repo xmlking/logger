@@ -1,6 +1,7 @@
 package zap
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/pkg/errors"
@@ -57,6 +58,34 @@ func TestError(t *testing.T) {
 	log.Errorw("test Errorw", err2)
 }
 
+func TestWithError(t *testing.T) {
+	l, err := NewLogger()
+	if err != nil {
+		t.Fatal(err)
+	}
+	logger.DefaultLogger = l
+
+	log.Error("TestWithError")
+	log.Errorf("testing: %s", "TestWithError")
+	log.Errorw("TestWithError", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+}
+
+func TestWithErrorAndDefaultFields(t *testing.T) {
+	l, err := NewLogger(logger.WithFields(map[string]interface{}{
+		"name":  "sumo",
+		"age":   99,
+		"alive": true,
+	}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	logger.DefaultLogger = l
+
+	log.Error("TestWithErrorAndDefaultFields")
+	log.Errorf("testing: %s", "TestWithErrorAndDefaultFields")
+	log.Errorw("TestWithErrorAndDefaultFields", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+}
+
 func TestFields(t *testing.T) {
 	l, err := NewLogger()
 	if err != nil {
@@ -64,7 +93,7 @@ func TestFields(t *testing.T) {
 	}
 	logger.DefaultLogger = l
 
-	log.Infow("testing: Fields", logger.Fields{
+	log.Infow("testing: Fields", map[string]interface{}{
 		"sumo":  "demo",
 		"human": true,
 		"age":   99,
@@ -72,7 +101,7 @@ func TestFields(t *testing.T) {
 }
 
 func TestSubLoggerWithFields(t *testing.T) {
-	l, err := NewLogger(logger.WithFields(logger.Fields{
+	l, err := NewLogger(logger.WithFields(map[string]interface{}{
 		"category": "test",
 		"alive":    true,
 	}))
@@ -81,7 +110,7 @@ func TestSubLoggerWithFields(t *testing.T) {
 	}
 	logger.DefaultLogger = l
 
-	log.Infow("testing: WithFields", logger.Fields{
+	log.Infow("testing: WithFields", map[string]interface{}{
 		"name":  "demo",
 		"human": true,
 		"age":   77,
@@ -97,7 +126,7 @@ func TestWithNamespace(t *testing.T) {
 	}
 	logger.DefaultLogger = l
 
-	log.Infow("testing: WithFields", logger.Fields{
+	log.Infow("testing: WithFields", map[string]interface{}{
 		"name":  "demo",
 		"human": true,
 		"age":   77,

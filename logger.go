@@ -6,8 +6,6 @@ var (
 	DefaultLogger Logger = NewLogger()
 )
 
-type Fields map[string]interface{}
-
 // Logger is a generic logging interface
 type Logger interface {
 	// Init initializes options
@@ -15,7 +13,7 @@ type Logger interface {
 	// The Logger options
 	Options() Options
 	// log at given level with message, fmtArgs and context fields
-	Log(level Level, template string, fmtArgs []interface{}, fields Fields)
+	Log(level Level, template string, fmtArgs []interface{}, fields map[string]interface{})
 	// log error at given level with message, fmtArgs and stack if enabled.
 	Error(level Level, template string, fmtArgs []interface{}, err error)
 	// String returns the name of logger
@@ -34,7 +32,7 @@ func SetLevel(lvl Level) {
 }
 
 // Log to DefaultLogger
-func Log(level Level, template string, fmtArgs []interface{}, fields Fields) {
+func Log(level Level, template string, fmtArgs []interface{}, fields map[string]interface{}) {
 	DefaultLogger.Log(level, template, fmtArgs, fields)
 }
 
@@ -46,4 +44,19 @@ func Error(level Level, template string, fmtArgs []interface{}, err error) {
 // Get DefaultLogger name
 func String() string {
 	return DefaultLogger.String()
+}
+
+// MergeMaps will overwriting duplicate keys, you should handle that, if there is a need
+func MergeMaps(maps ...map[string]interface{}) map[string]interface{} {
+	var sum int
+	for _, m := range maps {
+		sum += len(m)
+	}
+	result := make(map[string]interface{}, sum)
+	for _, m := range maps {
+		for k, v := range m {
+			result[k] = v
+		}
+	}
+	return result
 }

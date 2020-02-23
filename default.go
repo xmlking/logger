@@ -24,7 +24,7 @@ func (l *defaultLogger) String() string {
 	return "default"
 }
 
-func (l *defaultLogger) Log(level Level, template string, fmtArgs []interface{}, fields Fields) {
+func (l *defaultLogger) Log(level Level, template string, fmtArgs []interface{}, fields map[string]interface{}) {
 	if !l.opts.Level.Enabled(level) {
 		return
 	}
@@ -36,7 +36,12 @@ func (l *defaultLogger) Log(level Level, template string, fmtArgs []interface{},
 		msg = fmt.Sprintf(template, fmtArgs...)
 	}
 
-	fields = mergeMaps(l.opts.Fields, fields)
+	if len(l.opts.Fields) > 0 {
+		fields = MergeMaps(l.opts.Fields, fields)
+	} else if len(fields) == 0 {
+		fields = make(map[string]interface{}, 2)
+	}
+
 	fields["level"] = level.String()
 	fields["message"] = msg
 
@@ -59,11 +64,15 @@ func (l *defaultLogger) Error(level Level, template string, fmtArgs []interface{
 		msg = fmt.Sprintf(template, fmtArgs...)
 	}
 
-	fields := mergeMaps(l.opts.Fields, map[string]interface{}{
+	fields := map[string]interface{}{
 		"level":   level.String(),
 		"message": msg,
 		"error":   err.Error(),
-	})
+	}
+
+	if len(l.opts.Fields) > 0 {
+		fields = MergeMaps(l.opts.Fields, fields)
+	}
 
 	enc := json.NewEncoder(l.opts.Out)
 
@@ -71,17 +80,6 @@ func (l *defaultLogger) Error(level Level, template string, fmtArgs []interface{
 		log.Fatal(err)
 	}
 
-}
-
-// overwriting duplicate keys, you should handle that if there is a need
-func mergeMaps(maps ...map[string]interface{}) map[string]interface{} {
-	result := make(map[string]interface{})
-	for _, m := range maps {
-		for k, v := range m {
-			result[k] = v
-		}
-	}
-	return result
 }
 
 func (n *defaultLogger) Options() Options {

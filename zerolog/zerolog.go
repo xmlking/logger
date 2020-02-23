@@ -115,7 +115,7 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 	return nil
 }
 
-func (l *zeroLogger) Log(level logger.Level, template string, fmtArgs []interface{}, fields logger.Fields) {
+func (l *zeroLogger) Log(level logger.Level, template string, fmtArgs []interface{}, fields map[string]interface{}) {
 
 	// Format with Sprint, Sprintf, or neither.
 	msg := template

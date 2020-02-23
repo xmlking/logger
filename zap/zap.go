@@ -67,7 +67,7 @@ func (l *zaplog) Init(opts ...logger.Option) error {
 	return nil
 }
 
-func (l *zaplog) Log(level logger.Level, template string, fmtArgs []interface{}, fields logger.Fields) {
+func (l *zaplog) Log(level logger.Level, template string, fmtArgs []interface{}, fields map[string]interface{}) {
 	lvl := loggerToZapLevel(level)
 	if lvl < zapcore.DPanicLevel && !l.zap.Core().Enabled(lvl) {
 		return
