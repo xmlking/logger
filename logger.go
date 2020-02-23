@@ -22,18 +22,28 @@ type Logger interface {
 	String() string
 }
 
-func Init(opts ...Option) error {
-	return DefaultLogger.Init(opts...)
+// func Init(opts ...Option) error {
+// 	return DefaultLogger.Init(opts...)
+// }
+
+// Set DefaultLogger Level
+func SetLevel(lvl Level) {
+	if err := DefaultLogger.Init(WithLevel(lvl)); err != nil {
+		print(err)
+	}
 }
 
+// Log to DefaultLogger
 func Log(level Level, template string, fmtArgs []interface{}, fields Fields) {
 	DefaultLogger.Log(level, template, fmtArgs, fields)
 }
 
+// Error log to DefaultLogger
 func Error(level Level, template string, fmtArgs []interface{}, err error) {
 	DefaultLogger.Error(level, template, fmtArgs, err)
 }
 
+// Get DefaultLogger name
 func String() string {
 	return DefaultLogger.String()
 }

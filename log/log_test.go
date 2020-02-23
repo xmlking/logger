@@ -21,10 +21,10 @@ func TestName(t *testing.T) {
 }
 
 func TestSetLevel(t *testing.T) {
-	log.SetGlobalLevel(logger.DebugLevel)
+	logger.SetLevel(logger.DebugLevel)
 	log.Debugf("test show debug: %s", "debug msg")
 
-	log.SetGlobalLevel(logger.InfoLevel)
+	logger.SetLevel(logger.InfoLevel)
 	log.Debugf("test non-show debug: %s", "debug msg")
 }
 

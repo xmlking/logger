@@ -4,12 +4,6 @@ import (
 	"github.com/xmlking/logger"
 )
 
-func SetGlobalLevel(lvl logger.Level) {
-	if err := logger.Init(logger.WithLevel(lvl)); err != nil {
-		print(err)
-	}
-}
-
 func Trace(args ...interface{}) {
 	logger.Log(logger.TraceLevel, "", args, nil)
 }

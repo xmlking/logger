@@ -41,10 +41,10 @@ func TestJSON(t *testing.T) {
 func TestSetLevel(t *testing.T) {
 	logger.DefaultLogger = NewLogger()
 
-	log.SetGlobalLevel(logger.DebugLevel)
+	logger.SetLevel(logger.DebugLevel)
 	log.Debugf("test show debug: %s", "debug msg")
 
-	log.SetGlobalLevel(logger.InfoLevel)
+	logger.SetLevel(logger.InfoLevel)
 	log.Debugf("test non-show debug: %s", "debug msg")
 }
 
