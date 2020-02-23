@@ -47,6 +47,12 @@ func WithProductionMode() logger.Option {
 	return logger.SetOption(productionModeKey{}, true)
 }
 
+type gcpModeKey struct{}
+
+func WithGCPMode() logger.Option {
+	return logger.SetOption(gcpModeKey{}, true)
+}
+
 type timeFormatKey struct{}
 
 func WithTimeFormat(timeFormat string) logger.Option {

@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-
 	"github.com/rs/zerolog"
 
 	"github.com/xmlking/logger"
@@ -45,6 +44,25 @@ func ExampleWithOut() {
 	// {"level":"info","age":99,"human":true,"sumo":"demo","time":"ddd","message":"testing: Infow"}
 }
 
+func ExampleWithGcp() {
+	logger.DefaultLogger = NewLogger(logger.WithOutput(os.Stdout), WithGCPMode(), WithTimeFormat("aaa"))
+
+	log.Info("testing: Info")
+	log.Infof("testing: %s", "Infof")
+	log.Infow("testing: Infow", map[string]interface{}{
+		"sumo":  "demo",
+		"human": true,
+		"age":   99,
+	})
+	logger.DefaultLogger.Init(ReportCaller())
+	log.Errorw("TestWithGCPModeAndWithError", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+	// Output:
+	//{"severity":"Info","timestamp":"aaa","message":"testing: Info"}
+	//{"severity":"Info","timestamp":"aaa","message":"testing: Infof"}
+	//{"severity":"Info","age":99,"human":true,"sumo":"demo","timestamp":"aaa","message":"testing: Infow"}
+	//{"severity":"Error","error":"Error nested: root error message","timestamp":"aaa","logging.googleapis.com/sourceLocation":{"file":"zerolog.go","line":"170","function":"github.com/xmlking/logger/zerolog.(*zeroLogger).Error"},"message":"TestWithGCPModeAndWithError"}
+}
+
 func TestSetLevel(t *testing.T) {
 	logger.DefaultLogger = NewLogger()
 
@@ -65,6 +83,25 @@ func TestWithOutput(t *testing.T) {
 	logger.DefaultLogger = NewLogger(logger.WithOutput(os.Stdout))
 
 	log.Infof("testing: %s", "WithOutput")
+}
+
+func TestWithGCPMode(t *testing.T) {
+	logger.DefaultLogger = NewLogger(WithGCPMode())
+
+	log.Info("testing: TestWithGCPMode Info")
+	log.Infof("testing: %s", "TestWithGCPMode Infof")
+	log.Infow("testing: TestWithGCPMode Infow", map[string]interface{}{
+		"sumo":  "demo",
+		"human": true,
+		"age":   99,
+	})
+
+	logger.DefaultLogger.Init(ReportCaller())
+	log.Errorw("TestWithGCPModeAndWithError", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+	logger.DefaultLogger.Init(WithTimeFormat(time.RFC3339Nano))
+	log.Infof("testing: %s", "TestWithGCPMode")
+	// reset `LevelFieldName` to make other tests pass.
+	NewLogger(WithProductionMode())
 }
 
 func TestWithDevelopmentMode(t *testing.T) {
