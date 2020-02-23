@@ -49,8 +49,7 @@ func (l *logrusLogger) String() string {
 	return "logrus"
 }
 
-func (l *logrusLogger) Log(level logger.Level, template string, fmtArgs []interface{}, fields logger.Fields) {
-	var fld map[string]interface{} = fields
+func (l *logrusLogger) Log(level logger.Level, template string, fmtArgs []interface{}, fields map[string]interface{}) {
 
 	// Format with Sprint, Sprintf, or neither.
 	msg := template
@@ -60,7 +59,16 @@ func (l *logrusLogger) Log(level logger.Level, template string, fmtArgs []interf
 		msg = fmt.Sprintf(template, fmtArgs...)
 	}
 
-	l.Logger.WithFields(fld).Log(loggerToLogrusLevel(level), msg)
+	if len(l.opts.Fields) > 0 {
+		fields = logger.MergeMaps(l.opts.Fields, fields)
+	}
+
+	if len(fields) > 0 {
+		l.Logger.WithFields(fields).Log(loggerToLogrusLevel(level), msg)
+	} else {
+		l.Logger.Log(loggerToLogrusLevel(level), msg)
+	}
+
 }
 func (l *logrusLogger) Error(level logger.Level, template string, fmtArgs []interface{}, err error) {
 
@@ -72,7 +80,7 @@ func (l *logrusLogger) Error(level logger.Level, template string, fmtArgs []inte
 		msg = fmt.Sprintf(template, fmtArgs...)
 	}
 
-	l.Logger.WithError(err).Log(loggerToLogrusLevel(level), msg)
+	l.Logger.WithFields(l.opts.Fields).WithError(err).Log(loggerToLogrusLevel(level), msg)
 }
 
 func (l *logrusLogger) Options() logger.Options {
