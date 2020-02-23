@@ -52,3 +52,11 @@ func ExampleWithOut() {
 	// {"level":"info","age":99,"human":true,"sumo":"demo","time":"ddd","message":"testing: Infow"}
 }
 ```
+
+
+### Contributors
+
+```bash
+git flow release start  v0.1.0
+git-chglog -c .github/chglog/config.yml -o CHANGELOG.md --next-tag v0.1.0
+```  
