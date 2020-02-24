@@ -25,7 +25,8 @@ release: download
 	@if [ -z $(TAG) ]; then \
 		echo "no  TAG. Usage: make release TAG=v0.1.1"; \
 	else \
-		for m in `find * -name 'go.mod' -exec dirname {} \;`; do \
-			echo hub release create -m "\"$$m/${TAG} release\"" $$m/${TAG}; \
+		for m in `find * -name 'go.mod' -mindepth 1 -exec dirname {} \;`; do \
+			hub release create -m "$$m/${TAG} release" $$m/${TAG}; \
 		done \
 	fi
+

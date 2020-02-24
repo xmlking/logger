@@ -77,6 +77,10 @@ git add .
 git flow release start  v0.1.0
 # on release branch
 git-chglog -c .github/chglog/config.yml -o CHANGELOG.md --next-tag v0.1.0
+
+# add git tags
+make release TAG=v0.1.1
+
 # on master branch, (gpoat = git push origin --all && git push origin --tags)
 gpoat
 ```  
