@@ -27,10 +27,9 @@ func TestName(t *testing.T) {
 func ExampleWithOut() {
 	logger.DefaultLogger = NewLogger(
 		logger.WithOutput(os.Stdout),
-		WithTimeFormat("ddd"),
+		logger.WithTimeFormat("ddd"),
 		WithProductionMode(),
 	)
-
 	log.Info("testing: Info")
 	log.Infof("testing: %s", "Infof")
 	log.Infow("testing: Infow", map[string]interface{}{
@@ -45,8 +44,11 @@ func ExampleWithOut() {
 }
 
 func ExampleWithGcp() {
-	logger.DefaultLogger = NewLogger(logger.WithOutput(os.Stdout), WithGCPMode(), WithTimeFormat("aaa"))
-
+	logger.DefaultLogger = NewLogger(
+		logger.WithOutput(os.Stdout),
+		WithGCPMode(),
+		logger.WithTimeFormat("aaa"),
+	)
 	log.Info("testing: Info")
 	log.Infof("testing: %s", "Infof")
 	log.Infow("testing: Infow", map[string]interface{}{
@@ -60,7 +62,7 @@ func ExampleWithGcp() {
 	//{"severity":"Info","timestamp":"aaa","message":"testing: Info"}
 	//{"severity":"Info","timestamp":"aaa","message":"testing: Infof"}
 	//{"severity":"Info","age":99,"human":true,"sumo":"demo","timestamp":"aaa","message":"testing: Infow"}
-	//{"severity":"Error","error":"Error nested: root error message","timestamp":"aaa","logging.googleapis.com/sourceLocation":{"file":"zerolog.go","line":"170","function":"github.com/xmlking/logger/zerolog.(*zeroLogger).Error"},"message":"TestWithGCPModeAndWithError"}
+	//{"severity":"Error","error":"Error nested: root error message","timestamp":"aaa","logging.googleapis.com/sourceLocation":{"file":"zerolog.go","line":"167","function":"github.com/xmlking/logger/zerolog.(*zeroLogger).Error"},"message":"TestWithGCPModeAndWithError"}
 }
 
 func TestSetLevel(t *testing.T) {
@@ -98,14 +100,14 @@ func TestWithGCPMode(t *testing.T) {
 
 	logger.DefaultLogger.Init(ReportCaller())
 	log.Errorw("TestWithGCPModeAndWithError", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
-	logger.DefaultLogger.Init(WithTimeFormat(time.RFC3339Nano))
+	logger.DefaultLogger.Init(logger.WithTimeFormat(time.RFC3339Nano))
 	log.Infof("testing: %s", "TestWithGCPMode")
 	// reset `LevelFieldName` to make other tests pass.
 	NewLogger(WithProductionMode())
 }
 
 func TestWithDevelopmentMode(t *testing.T) {
-	logger.DefaultLogger = NewLogger(WithDevelopmentMode(), WithTimeFormat(time.Kitchen))
+	logger.DefaultLogger = NewLogger(WithDevelopmentMode(), logger.WithTimeFormat(time.Kitchen))
 
 	log.Infof("testing: %s", "DevelopmentMode")
 }

@@ -6,13 +6,12 @@ import (
 	"time"
 
 	"github.com/xmlking/logger"
-	glog "github.com/xmlking/logger/gormlog"
-	zlog "github.com/xmlking/logger/zerolog"
+	"github.com/xmlking/logger/gormlog"
 )
 
 func BenchmarkLogger_Print(b *testing.B) {
-	mLogger := zlog.NewLogger(logger.WithOutput(os.Stdout), logger.WithLevel(logger.DebugLevel))
-	l := glog.NewGormLogger(mLogger)
+	mLogger := logger.NewLogger(logger.WithOutput(os.Stdout), logger.WithLevel(logger.DebugLevel))
+	l := gormlog.NewGormLogger(mLogger)
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {

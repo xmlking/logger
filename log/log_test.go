@@ -68,7 +68,7 @@ func TestWithErrorAndDefaultFields(t *testing.T) {
 }
 
 func ExampleLog() {
-	logger.DefaultLogger = logger.NewLogger(logger.WithOutput(os.Stdout))
+	logger.DefaultLogger = logger.NewLogger(logger.WithOutput(os.Stdout), logger.WithTimeFormat("ddd"))
 	log.Info("test show info: ", "msg ", true, 45.65)
 	log.Infof("test show infof: name: %s, age: %d", "sumo", 99)
 	log.Infow("test show fields", map[string]interface{}{
@@ -77,7 +77,7 @@ func ExampleLog() {
 		"alive": true,
 	})
 	// Output:
-	//{"level":"info","message":"test show info: msg true 45.65"}
-	//{"level":"info","message":"test show infof: name: sumo, age: 99"}
-	//{"age":99,"alive":true,"level":"info","message":"test show fields","name":"sumo"}
+	//{"level":"info","message":"test show info: msg true 45.65","time":"ddd"}
+	//{"level":"info","message":"test show infof: name: sumo, age: 99","time":"ddd"}
+	//{"age":99,"alive":true,"level":"info","message":"test show fields","name":"sumo","time":"ddd"}
 }

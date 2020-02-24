@@ -54,9 +54,29 @@ func ExampleWithOut() {
 ```
 
 
-### Contributors
+### For Contributor
+
+#### Prerequisites 
 
 ```bash
+brew install hub
+```
+
+#### Test
+
+```bash
+make download
+make test
+```
+
+#### Release 
+```bash
+make download
+git add .
+# Start release on develop branch 
 git flow release start  v0.1.0
+# on release branch
 git-chglog -c .github/chglog/config.yml -o CHANGELOG.md --next-tag v0.1.0
+# on master branch, (gpoat = git push origin --all && git push origin --tags)
+gpoat
 ```  

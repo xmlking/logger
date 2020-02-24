@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 )
 
 type defaultLogger struct {
@@ -39,9 +40,10 @@ func (l *defaultLogger) Log(level Level, template string, fmtArgs []interface{},
 	if len(l.opts.Fields) > 0 {
 		fields = MergeMaps(l.opts.Fields, fields)
 	} else if len(fields) == 0 {
-		fields = make(map[string]interface{}, 2)
+		fields = make(map[string]interface{}, 3)
 	}
 
+	fields["time"] = time.Now().Format(l.opts.TimeFormat)
 	fields["level"] = level.String()
 	fields["message"] = msg
 
@@ -65,6 +67,7 @@ func (l *defaultLogger) Error(level Level, template string, fmtArgs []interface{
 	}
 
 	fields := map[string]interface{}{
+		"time":    time.Now().Format(l.opts.TimeFormat),
 		"level":   level.String(),
 		"message": msg,
 		"error":   err.Error(),
@@ -90,10 +93,11 @@ func (n *defaultLogger) Options() Options {
 func NewLogger(opts ...Option) Logger {
 	// Default options
 	options := Options{
-		Level:   InfoLevel,
-		Fields:  make(map[string]interface{}),
-		Out:     os.Stderr,
-		Context: context.Background(),
+		Level:      InfoLevel,
+		TimeFormat: time.RFC3339,
+		Fields:     make(map[string]interface{}),
+		Out:        os.Stderr,
+		Context:    context.Background(),
 	}
 
 	l := &defaultLogger{opts: options}
