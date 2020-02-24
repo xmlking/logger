@@ -5,18 +5,17 @@ import (
 	"time"
 
 	"github.com/xmlking/logger"
-	glog "github.com/xmlking/logger/gormlog"
-	zlog "github.com/xmlking/logger/zerolog"
+	"github.com/xmlking/logger/gormlog"
 )
 
 func ExampleLogger() {
-	mLogger := zlog.NewLogger(
+	mLogger := logger.NewLogger(
 		logger.WithOutput(os.Stdout),
-		zlog.WithTimeFormat("ddd"),
+		logger.WithTimeFormat("ddd"),
 		logger.WithLevel(logger.DebugLevel),
 	)
 
-	l := glog.NewGormLogger(mLogger, glog.WithLevel(logger.DebugLevel))
+	l := gormlog.NewGormLogger(mLogger, gormlog.WithLevel(logger.DebugLevel))
 
 	l.Print(
 		"sql",
@@ -28,21 +27,21 @@ func ExampleLogger() {
 	)
 
 	// Output:
-	// {"level":"debug","duration":2000,"query":"SELECT * FROM foo WHERE id = 123","rows_affected":2,"source":"/foo/bar.go","time":"ddd","message":"gorm query"}
+	//{"duration":2000000000,"level":"debug","message":"gorm query","query":"SELECT * FROM foo WHERE id = 123","rows_affected":2,"source":"/foo/bar.go","time":"ddd"}
 }
 
 func ExampleWithRecordToFields() {
-	mLogger := zlog.NewLogger(
+	mLogger := logger.NewLogger(
 		logger.WithOutput(os.Stdout),
-		zlog.WithTimeFormat("ddd"),
+		logger.WithTimeFormat("ddd"),
 		logger.WithLevel(logger.DebugLevel),
 	)
 
-	l := glog.NewGormLogger(
+	l := gormlog.NewGormLogger(
 		mLogger,
-		glog.WithLevel(logger.DebugLevel),
+		gormlog.WithLevel(logger.DebugLevel),
 
-		glog.WithRecordToFields(func(r glog.Record) map[string]interface{} {
+		gormlog.WithRecordToFields(func(r gormlog.Record) map[string]interface{} {
 			return map[string]interface{}{
 				"caller":        r.Source,
 				"duration_ms":   float32(r.Duration.Nanoseconds()/1000) / 1000,
@@ -62,7 +61,7 @@ func ExampleWithRecordToFields() {
 	)
 
 	// Output:
-	// {"level":"debug","caller":"/foo/bar.go","duration_ms":200,"query":"SELECT * FROM foo WHERE id = 123","rows_affected":2,"time":"ddd","message":"gorm query"}
+	//{"caller":"/foo/bar.go","duration_ms":200,"level":"debug","message":"gorm query","query":"SELECT * FROM foo WHERE id = 123","rows_affected":2,"time":"ddd"}
 }
 
 /**
@@ -146,7 +145,7 @@ func TestLogger_Print(t *testing.T) {
 
 func logger() (*gormlog.GormLogger, *eroztest.Buffer) {
 
-	mLogger := zlog.NewLogger(zlog.WithLevel(ml.DebugLevel))
+	mLogger := logger.NewLogger(logger.WithLevel(ml.DebugLevel))
 
 	return gormlog.NewGormLogger(mLogger), buf
 }
