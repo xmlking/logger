@@ -6,6 +6,19 @@ Think SLF4J for GoLang.
 
 ## Usage
 
+Import dependencies. Use latest version.
+
+```go
+import (
+	github.com/xmlking/logger v0.1.2
+    // required: your choice of logger plugins
+	github.com/xmlking/logger/zerolog v0.1.2
+    //optional: gormlog
+	github.com/xmlking/logger/gormlog v0.1.2
+
+)
+```
+
 ### Default logger
 
 ```go
