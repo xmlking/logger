@@ -10,6 +10,8 @@ type Option func(*Options)
 type Options struct {
 	// The logging level the logger should log at. default is `InfoLevel`
 	Level Level
+	// TimeFormat is one of time.RFC3339, time.RFC3339Nano, time.*
+	TimeFormat string
 	// fields to always be logged
 	Fields map[string]interface{}
 	// It's common to set this to a file, or leave it default which is `os.Stderr`
@@ -29,6 +31,13 @@ func WithFields(fields map[string]interface{}) Option {
 func WithLevel(level Level) Option {
 	return func(args *Options) {
 		args.Level = level
+	}
+}
+
+// WithTimeFormat set default timeFormat for the logger
+func WithTimeFormat(timeFormat string) Option {
+	return func(args *Options) {
+		args.TimeFormat = timeFormat
 	}
 }
 

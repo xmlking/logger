@@ -35,9 +35,6 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 	if hs, ok := l.opts.Context.Value(hooksKey{}).([]zerolog.Hook); ok {
 		l.opts.Hooks = hs
 	}
-	if tf, ok := l.opts.Context.Value(timeFormatKey{}).(string); ok {
-		l.opts.TimeFormat = tf
-	}
 	if exitFunction, ok := l.opts.Context.Value(exitKey{}).(func(int)); ok {
 		l.opts.ExitFunc = exitFunction
 	}
@@ -188,10 +185,11 @@ func NewLogger(opts ...logger.Option) logger.Logger {
 	// Default options
 	options := Options{
 		Options: logger.Options{
-			Level:   100,
-			Fields:  make(map[string]interface{}),
-			Out:     os.Stderr,
-			Context: context.Background(),
+			Level:      100,
+			TimeFormat: time.RFC3339,
+			Fields:     make(map[string]interface{}),
+			Out:        os.Stderr,
+			Context:    context.Background(),
 		},
 		ReportCaller: false,
 		UseAsDefault: false,

@@ -15,8 +15,6 @@ type Options struct {
 	UseAsDefault bool
 	// zerolog hooks
 	Hooks []zerolog.Hook
-	// TimeFormat is one of time.RFC3339, time.RFC3339Nano, time.*
-	TimeFormat string
 	// Runtime mode. (Production by default)
 	Mode Mode
 	// Exit Function to call when FatalLevel log
@@ -51,12 +49,6 @@ type gcpModeKey struct{}
 
 func WithGCPMode() logger.Option {
 	return logger.SetOption(gcpModeKey{}, true)
-}
-
-type timeFormatKey struct{}
-
-func WithTimeFormat(timeFormat string) logger.Option {
-	return logger.SetOption(timeFormatKey{}, timeFormat)
 }
 
 type hooksKey struct{}
