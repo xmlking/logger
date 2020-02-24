@@ -56,6 +56,12 @@ func ExampleWithOut() {
 
 ### For Contributor
 
+#### Prerequisites 
+
+```bash
+brew install hub
+```
+
 #### Test
 
 ```bash
