@@ -74,13 +74,13 @@ make test
 make download
 git add .
 # Start release on develop branch 
-git flow release start  v0.1.0
+git flow release start v0.1.0
 # on release branch
 git-chglog -c .github/chglog/config.yml -o CHANGELOG.md --next-tag v0.1.0
-
-# add git tags
-make release TAG=v0.1.1
-
+# finish release on release branch 
+git flow release finish v0.1.0
 # on master branch, (gpoat = git push origin --all && git push origin --tags)
 gpoat
+# add git tags for sub-modules
+make release TAG=v0.1.0
 ```  
