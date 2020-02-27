@@ -109,7 +109,7 @@ func TestWithGCPMode(t *testing.T) {
 }
 
 func TestWithDevelopmentMode(t *testing.T) {
-	logger.DefaultLogger = NewLogger(WithDevelopmentMode(), logger.WithTimeFormat(time.Kitchen))
+	logger.DefaultLogger = NewLogger(WithDevelopmentMode())
 
 	log.Infof("testing: %s", "DevelopmentMode")
 }

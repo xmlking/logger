@@ -185,11 +185,11 @@ func NewLogger(opts ...logger.Option) logger.Logger {
 	// Default options
 	options := Options{
 		Options: logger.Options{
-			Level:      100,
-			TimeFormat: time.RFC3339,
-			Fields:     make(map[string]interface{}),
-			Out:        os.Stderr,
-			Context:    context.Background(),
+			Level: 100,
+			// TimeFormat: time.RFC3339,
+			Fields:  make(map[string]interface{}),
+			Out:     os.Stderr,
+			Context: context.Background(),
 		},
 		ReportCaller: false,
 		UseAsDefault: false,

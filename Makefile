@@ -4,7 +4,7 @@
 # make release  	# add git TAG and push
 GOPATH					:= $(shell go env GOPATH)
 
-.PHONY: download, lint, format, test, release
+.PHONY: download, lint, format, test, bench, release
 
 download:
 	@for d in `find * -name 'go.mod'`; do \
@@ -21,12 +21,22 @@ lint:
 format:
 	@gofmt -l -w . ;
 
-#go test -race -v ./... || :
+# go test -race -v ./... || :
+# go test -mod=readonly -v ./...;
 
 test: download
 	@for d in `find * -name 'go.mod'`; do \
 		pushd `dirname $$d` >/dev/null; \
-		go test -mod=readonly  -v ./...; \
+		go test -v ./...; \
+		popd >/dev/null; \
+	done
+
+# go test -mod=readonly -v -run=__absolutelynothing__ -bench=. ./...; \
+
+bench: download
+	@for d in `find * -name 'go.mod'`; do \
+		pushd `dirname $$d` >/dev/null; \
+		go test -v -run=__absolutelynothing__ -bench=. ./...; \
 		popd >/dev/null; \
 	done
 
