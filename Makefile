@@ -36,7 +36,7 @@ test: download
 bench: download
 	@for d in `find * -name 'go.mod'`; do \
 		pushd `dirname $$d` >/dev/null; \
-		go test -v -run=__absolutelynothing__ -bench=. ./...; \
+		go test -run=^a -bench=. ./...; \
 		popd >/dev/null; \
 	done
 

@@ -81,6 +81,14 @@ GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
 ```bash
 make download
 make test
+make bench
+# Benchmark specific test
+cd zerolog
+go test -run=^$ -bench=^BenchmarkInfoLog ./...
+go test -run=^$ -bench=^BenchmarkInfoLog -benchtime 15s -count 2 -cpu 1,2,4 ./...
+# Results:
+# zerolog: 326443       3866 ns/op
+# wrapper: 324487       4280 ns/op
 ```
 
 #### Release
