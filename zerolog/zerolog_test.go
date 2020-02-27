@@ -103,7 +103,9 @@ func TestWithGCPMode(t *testing.T) {
 	logger.DefaultLogger.Init(logger.WithTimeFormat(time.RFC3339Nano))
 	log.Infof("testing: %s", "TestWithGCPMode")
 	// reset `LevelFieldName` to make other tests pass.
-	NewLogger(WithProductionMode())
+	t.Cleanup(func() {
+		NewLogger(WithProductionMode())
+	})
 }
 
 func TestWithDevelopmentMode(t *testing.T) {
