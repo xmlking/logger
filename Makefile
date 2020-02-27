@@ -2,7 +2,9 @@
 # make test       	# test all modules
 # make download  	# download dependencies
 # make release  	# add git TAG and push
-.PHONY: download, test, release
+GOPATH					:= $(shell go env GOPATH)
+
+.PHONY: download, lint, format, test, release
 
 download:
 	@for d in `find * -name 'go.mod'`; do \
@@ -12,12 +14,19 @@ download:
 		popd >/dev/null; \
 	done
 
+lint:
+	@${GOPATH}/bin/golangci-lint run ./... --deadline=5m;
+	@goup -v -m  ./...
+
+format:
+	@gofmt -l -w . ;
+
 #go test -race -v ./... || :
 
 test: download
 	@for d in `find * -name 'go.mod'`; do \
 		pushd `dirname $$d` >/dev/null; \
-		go test -v ./...; \
+		go test -mod=readonly  -v ./...; \
 		popd >/dev/null; \
 	done
 
