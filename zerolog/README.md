@@ -10,14 +10,14 @@
 import (
 	"github.com/xmlking/logger"
 	"github.com/xmlking/logger/log"
-    "github.com/xmlking/logger/zerolog"
+  "github.com/xmlking/logger/zerolog"
 )
 
 func ExampleWithOut() {
-	logger.DefaultLogger = NewLogger(
+	logger.DefaultLogger = zerolog.NewLogger(
 		logger.WithOutput(os.Stdout),
-		WithTimeFormat("ddd"),
-		WithProductionMode(),
+		logger.WithTimeFormat("ddd"),
+		zerolog.WithProductionMode(),
 	)
 
 	log.Info("testing: Info")
@@ -45,11 +45,11 @@ import (
 
 	"github.com/xmlking/logger"
 	"github.com/xmlking/logger/log"
-	zlog "github.com/xmlking/logger/zerolog"
+	"github.com/xmlking/logger/zerolog"
 )
 
 func ExampleWithGcp() {
-	logger.DefaultLogger = zlog.NewLogger(logger.WithOutput(os.Stdout), zlog.WithGCPMode(), zlog.WithTimeFormat("aaa"))
+	logger.DefaultLogger = zerolog.NewLogger(logger.WithOutput(os.Stdout), logger.WithTimeFormat("aaa"), zerolog.WithGCPMode())
 
 	log.Info("testing: Info")
 	log.Infof("testing: %s", "Infof")
@@ -69,6 +69,6 @@ func ExampleWithGcp() {
 
 ```
 
-### Reference 
+### Reference
 - https://github.com/arquivei/foundationkit/blob/master/log/stackdriver/stackdriver.go
 - https://github.com/yfuruyama/crzerolog
