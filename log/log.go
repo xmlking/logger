@@ -1,75 +1,69 @@
+// Package `log` provides default logger's public API
 package log
 
 import (
 	"github.com/xmlking/logger"
 )
 
-func Trace(args ...interface{}) {
-	logger.Log(logger.TraceLevel, "", args, nil)
+func WithFields(fields map[string]interface{}) logger.Record {
+	return logger.DefaultLogger.WithFields(fields)
 }
-func Tracef(template string, args ...interface{}) {
-	logger.Log(logger.TraceLevel, template, args, nil)
-}
-func Tracew(msg string, fields map[string]interface{}) {
-	logger.Log(logger.TraceLevel, msg, nil, fields)
+func WithError(err error) logger.Record {
+	return logger.DefaultLogger.WithError(err)
 }
 
-func Debug(args ...interface{}) {
-	logger.Log(logger.DebugLevel, "", args, nil)
-}
-func Debugf(template string, args ...interface{}) {
-	logger.Log(logger.DebugLevel, template, args, nil)
-}
-func Debugw(msg string, fields map[string]interface{}) {
-	logger.Log(logger.DebugLevel, msg, nil, fields)
+// Set DefaultLogger Level
+func SetLevel(lvl logger.Level) {
+	if err := logger.DefaultLogger.Init(logger.WithLevel(lvl)); err != nil {
+		print(err)
+	}
 }
 
-func Info(args ...interface{}) {
-	logger.Log(logger.InfoLevel, "", args, nil)
-}
-func Infof(template string, args ...interface{}) {
-	logger.Log(logger.InfoLevel, template, args, nil)
-}
-func Infow(msg string, fields map[string]interface{}) {
-	logger.Log(logger.InfoLevel, msg, nil, fields)
+// Get DefaultLogger name
+func String() string {
+	return logger.DefaultLogger.String()
 }
 
-func Warn(args ...interface{}) {
-	logger.Log(logger.WarnLevel, "", args, nil)
+// Sugar methods
+func Trace(message string) {
+	logger.DefaultLogger.Log(logger.TraceLevel, message)
 }
-func Warnf(template string, args ...interface{}) {
-	logger.Log(logger.WarnLevel, template, args, nil)
+func Tracef(template string, fmtArgs ...interface{}) {
+	logger.DefaultLogger.Logf(logger.TraceLevel, template, fmtArgs)
 }
-func Warnw(msg string, fields map[string]interface{}) {
-	logger.Log(logger.WarnLevel, msg, nil, fields)
+func Debug(message string) {
+	logger.DefaultLogger.Log(logger.DebugLevel, message)
 }
-
-func Error(args ...interface{}) {
-	logger.Log(logger.ErrorLevel, "", args, nil)
+func Debugf(template string, fmtArgs ...interface{}) {
+	logger.DefaultLogger.Logf(logger.DebugLevel, template, fmtArgs)
 }
-func Errorf(template string, args ...interface{}) {
-	logger.Log(logger.ErrorLevel, template, args, nil)
+func Info(message string) {
+	logger.DefaultLogger.Log(logger.InfoLevel, message)
 }
-func Errorw(msg string, err error) {
-	logger.Error(logger.ErrorLevel, msg, nil, err)
+func Infof(template string, fmtArgs ...interface{}) {
+	logger.DefaultLogger.Logf(logger.InfoLevel, template, fmtArgs)
 }
-
-func Panic(args ...interface{}) {
-	logger.Log(logger.PanicLevel, "", args, nil)
+func Warn(message string) {
+	logger.DefaultLogger.Log(logger.WarnLevel, message)
 }
-func Panicf(template string, args ...interface{}) {
-	logger.Log(logger.PanicLevel, template, args, nil)
+func Warnf(template string, fmtArgs ...interface{}) {
+	logger.DefaultLogger.Logf(logger.WarnLevel, template, fmtArgs)
 }
-func Panicw(msg string, fields map[string]interface{}) {
-	logger.Log(logger.PanicLevel, msg, nil, fields)
+func Error(message string) {
+	logger.DefaultLogger.Log(logger.ErrorLevel, message)
 }
-
-func Fatal(args ...interface{}) {
-	logger.Log(logger.FatalLevel, "", args, nil)
+func Errorf(template string, fmtArgs ...interface{}) {
+	logger.DefaultLogger.Logf(logger.ErrorLevel, template, fmtArgs)
 }
-func Fatalf(template string, args ...interface{}) {
-	logger.Log(logger.FatalLevel, template, args, nil)
+func Panic(message string) {
+	logger.DefaultLogger.Log(logger.PanicLevel, message)
 }
-func Fatalw(msg string, fields map[string]interface{}) {
-	logger.Log(logger.FatalLevel, msg, nil, fields)
+func Panicf(template string, fmtArgs ...interface{}) {
+	logger.DefaultLogger.Logf(logger.PanicLevel, template, fmtArgs)
+}
+func Fatal(message string) {
+	logger.DefaultLogger.Log(logger.FatalLevel, message)
+}
+func Fatalf(template string, fmtArgs ...interface{}) {
+	logger.DefaultLogger.Logf(logger.FatalLevel, template, fmtArgs)
 }
