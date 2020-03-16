@@ -1,6 +1,6 @@
 module github.com/xmlking/logger/gormlog
 
-go 1.13
+go 1.14
 
 replace github.com/xmlking/logger => ../
 
