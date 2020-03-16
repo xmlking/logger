@@ -2,6 +2,7 @@ package logrus
 
 import (
 	"github.com/sirupsen/logrus"
+
 	"github.com/xmlking/logger"
 )
 

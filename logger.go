@@ -23,10 +23,10 @@ type Logger interface {
 	WithFields(fields map[string]interface{}) Record
 	// error to be logged once
 	WithError(err error) Record
-	// write message along with logger's default fields.
-	Log(level Level, message string)
-	// write template along with logger's default fields.
-	Logf(level Level, template string, fmtArgs ...interface{})
+	// write args along with logger's default fields.
+	Log(level Level, args ...interface{})
+	// write formatted args along with logger's default fields.
+	Logf(level Level, format string, args ...interface{})
 	// String returns the name of logger
 	String() string
 }
@@ -79,7 +79,7 @@ func (l *defaultLogger) WithError(err error) Record {
 	}
 }
 
-func (l *defaultLogger) Log(level Level, message string) {
+func (l *defaultLogger) Log(level Level, args ...interface{}) {
 	if !l.opts.Level.Enabled(level) {
 		return
 	}
@@ -89,11 +89,11 @@ func (l *defaultLogger) Log(level Level, message string) {
 		level:  l.opts.Level,
 		fields: l.opts.Fields,
 	}
-	r.Log(level, message)
+	r.Log(level, args...)
 
 }
 
-func (l *defaultLogger) Logf(level Level, template string, fmtArgs ...interface{}) {
+func (l *defaultLogger) Logf(level Level, format string, args ...interface{}) {
 	if !l.opts.Level.Enabled(level) {
 		return
 	}
@@ -103,7 +103,7 @@ func (l *defaultLogger) Logf(level Level, template string, fmtArgs ...interface{
 		level:  l.opts.Level,
 		fields: l.opts.Fields,
 	}
-	r.Logf(level, template, fmtArgs)
+	r.Logf(level, format, args...)
 }
 
 func (l *defaultLogger) String() string {

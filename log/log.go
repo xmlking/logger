@@ -25,45 +25,45 @@ func String() string {
 }
 
 // Sugar methods
-func Trace(message string) {
-	logger.DefaultLogger.Log(logger.TraceLevel, message)
+func Trace(args ...interface{}) {
+	logger.DefaultLogger.Log(logger.TraceLevel, args...)
 }
-func Tracef(template string, fmtArgs ...interface{}) {
-	logger.DefaultLogger.Logf(logger.TraceLevel, template, fmtArgs)
+func Tracef(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.TraceLevel, format, args...)
 }
-func Debug(message string) {
-	logger.DefaultLogger.Log(logger.DebugLevel, message)
+func Debug(args ...interface{}) {
+	logger.DefaultLogger.Log(logger.DebugLevel, args...)
 }
-func Debugf(template string, fmtArgs ...interface{}) {
-	logger.DefaultLogger.Logf(logger.DebugLevel, template, fmtArgs)
+func Debugf(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.DebugLevel, format, args...)
 }
-func Info(message string) {
-	logger.DefaultLogger.Log(logger.InfoLevel, message)
+func Info(args ...interface{}) {
+	logger.DefaultLogger.Log(logger.InfoLevel, args...)
 }
-func Infof(template string, fmtArgs ...interface{}) {
-	logger.DefaultLogger.Logf(logger.InfoLevel, template, fmtArgs)
+func Infof(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.InfoLevel, format, args...)
 }
-func Warn(message string) {
-	logger.DefaultLogger.Log(logger.WarnLevel, message)
+func Warn(args ...interface{}) {
+	logger.DefaultLogger.Log(logger.WarnLevel, args...)
 }
-func Warnf(template string, fmtArgs ...interface{}) {
-	logger.DefaultLogger.Logf(logger.WarnLevel, template, fmtArgs)
+func Warnf(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.WarnLevel, format, args...)
 }
-func Error(message string) {
-	logger.DefaultLogger.Log(logger.ErrorLevel, message)
+func Error(args ...interface{}) {
+	logger.DefaultLogger.Log(logger.ErrorLevel, args...)
 }
-func Errorf(template string, fmtArgs ...interface{}) {
-	logger.DefaultLogger.Logf(logger.ErrorLevel, template, fmtArgs)
+func Errorf(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.ErrorLevel, format, args...)
 }
-func Panic(message string) {
-	logger.DefaultLogger.Log(logger.PanicLevel, message)
+func Panic(args ...interface{}) {
+	logger.DefaultLogger.Log(logger.PanicLevel, args...)
 }
-func Panicf(template string, fmtArgs ...interface{}) {
-	logger.DefaultLogger.Logf(logger.PanicLevel, template, fmtArgs)
+func Panicf(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.PanicLevel, format, args...)
 }
-func Fatal(message string) {
-	logger.DefaultLogger.Log(logger.FatalLevel, message)
+func Fatal(args ...interface{}) {
+	logger.DefaultLogger.Log(logger.FatalLevel, args...)
 }
-func Fatalf(template string, fmtArgs ...interface{}) {
-	logger.DefaultLogger.Logf(logger.FatalLevel, template, fmtArgs)
+func Fatalf(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.FatalLevel, format, args...)
 }

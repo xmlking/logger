@@ -7,24 +7,28 @@ import (
 	"time"
 )
 
+// An Record is the final or intermediate logging entry. It contains all
+// the fields passed with WithField{,s}. It's finally logged when Trace, Debug,
+// Info, Warn, Error, Fatal or Panic is called on it. These objects can be
+// reused and passed around as much as you wish to avoid field duplication.
 type Record interface {
-	Log(level Level, message string)
-	Logf(level Level, template string, fmtArgs ...interface{})
+	Log(level Level, args ...interface{})
+	Logf(level Level, format string, args ...interface{})
 	// Sugar methods
-	Trace(message string)
-	Tracef(template string, fmtArgs ...interface{})
-	Debug(message string)
-	Debugf(template string, fmtArgs ...interface{})
-	Info(message string)
-	Infof(template string, fmtArgs ...interface{})
-	Warn(message string)
-	Warnf(template string, fmtArgs ...interface{})
-	Error(message string)
-	Errorf(template string, fmtArgs ...interface{})
-	Panic(message string)
-	Panicf(template string, fmtArgs ...interface{})
-	Fatal(message string)
-	Fatalf(template string, fmtArgs ...interface{})
+	Trace(args ...interface{})
+	Tracef(format string, args ...interface{})
+	Debug(args ...interface{})
+	Debugf(format string, args ...interface{})
+	Info(args ...interface{})
+	Infof(format string, args ...interface{})
+	Warn(args ...interface{})
+	Warnf(format string, args ...interface{})
+	Error(args ...interface{})
+	Errorf(format string, args ...interface{})
+	Panic(args ...interface{})
+	Panicf(format string, args ...interface{})
+	Fatal(args ...interface{})
+	Fatalf(format string, args ...interface{})
 }
 
 /**
@@ -37,13 +41,13 @@ type defaultRecord struct {
 	err    error
 }
 
-func (l *defaultRecord) Log(level Level, message string) {
+func (l *defaultRecord) Log(level Level, args ...interface{}) {
 	if !l.level.Enabled(level) {
 		return
 	}
 	l.fields["time"] = time.Now().Format(l.opts.TimeFormat)
 	l.fields["level"] = level.String()
-	l.fields["message"] = message
+	l.fields["message"] = fmt.Sprint(args...)
 
 	enc := json.NewEncoder(l.opts.Out)
 
@@ -52,21 +56,14 @@ func (l *defaultRecord) Log(level Level, message string) {
 	}
 }
 
-func (l *defaultRecord) Logf(level Level, template string, fmtArgs ...interface{}) {
+func (l *defaultRecord) Logf(level Level, format string, args ...interface{}) {
 	if !l.level.Enabled(level) {
 		return
-	}
-	// Format with Sprint, Sprintf, or neither.
-	msg := template
-	if msg == "" && len(fmtArgs) > 0 {
-		msg = fmt.Sprint(fmtArgs...)
-	} else if msg != "" && len(fmtArgs) > 0 {
-		msg = fmt.Sprintf(template, fmtArgs...)
 	}
 
 	l.fields["time"] = time.Now().Format(l.opts.TimeFormat)
 	l.fields["level"] = level.String()
-	l.fields["message"] = msg
+	l.fields["message"] = fmt.Sprintf(format, args...)
 
 	enc := json.NewEncoder(l.opts.Out)
 
@@ -76,45 +73,45 @@ func (l *defaultRecord) Logf(level Level, template string, fmtArgs ...interface{
 }
 
 // Sugar methods
-func (l *defaultRecord) Trace(message string) {
-	l.Log(TraceLevel, message)
+func (l *defaultRecord) Trace(args ...interface{}) {
+	l.Log(TraceLevel, args...)
 }
-func (l *defaultRecord) Tracef(template string, fmtArgs ...interface{}) {
-	l.Logf(TraceLevel, template, fmtArgs)
+func (l *defaultRecord) Tracef(format string, args ...interface{}) {
+	l.Logf(TraceLevel, format, args...)
 }
-func (l *defaultRecord) Debug(message string) {
-	l.Log(DebugLevel, message)
+func (l *defaultRecord) Debug(args ...interface{}) {
+	l.Log(DebugLevel, args...)
 }
-func (l *defaultRecord) Debugf(template string, fmtArgs ...interface{}) {
-	l.Logf(DebugLevel, template, fmtArgs)
+func (l *defaultRecord) Debugf(format string, args ...interface{}) {
+	l.Logf(DebugLevel, format, args...)
 }
-func (l *defaultRecord) Info(message string) {
-	l.Log(InfoLevel, message)
+func (l *defaultRecord) Info(args ...interface{}) {
+	l.Log(InfoLevel, args...)
 }
-func (l *defaultRecord) Infof(template string, fmtArgs ...interface{}) {
-	l.Logf(InfoLevel, template, fmtArgs)
+func (l *defaultRecord) Infof(format string, args ...interface{}) {
+	l.Logf(InfoLevel, format, args...)
 }
-func (l *defaultRecord) Warn(message string) {
-	l.Log(WarnLevel, message)
+func (l *defaultRecord) Warn(args ...interface{}) {
+	l.Log(WarnLevel, args...)
 }
-func (l *defaultRecord) Warnf(template string, fmtArgs ...interface{}) {
-	l.Logf(WarnLevel, template, fmtArgs)
+func (l *defaultRecord) Warnf(format string, args ...interface{}) {
+	l.Logf(WarnLevel, format, args...)
 }
-func (l *defaultRecord) Error(message string) {
-	l.Log(ErrorLevel, message)
+func (l *defaultRecord) Error(args ...interface{}) {
+	l.Log(ErrorLevel, args...)
 }
-func (l *defaultRecord) Errorf(template string, fmtArgs ...interface{}) {
-	l.Logf(ErrorLevel, template, fmtArgs)
+func (l *defaultRecord) Errorf(format string, args ...interface{}) {
+	l.Logf(ErrorLevel, format, args...)
 }
-func (l *defaultRecord) Panic(message string) {
-	l.Log(PanicLevel, message)
+func (l *defaultRecord) Panic(args ...interface{}) {
+	l.Log(PanicLevel, args...)
 }
-func (l *defaultRecord) Panicf(template string, fmtArgs ...interface{}) {
-	l.Logf(PanicLevel, template, fmtArgs)
+func (l *defaultRecord) Panicf(format string, args ...interface{}) {
+	l.Logf(PanicLevel, format, args...)
 }
-func (l *defaultRecord) Fatal(message string) {
-	l.Log(FatalLevel, message)
+func (l *defaultRecord) Fatal(args ...interface{}) {
+	l.Log(FatalLevel, args...)
 }
-func (l *defaultRecord) Fatalf(template string, fmtArgs ...interface{}) {
-	l.Logf(FatalLevel, template, fmtArgs...)
+func (l *defaultRecord) Fatalf(format string, args ...interface{}) {
+	l.Logf(FatalLevel, format, args...)
 }

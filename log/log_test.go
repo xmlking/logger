@@ -70,14 +70,14 @@ func TestWithErrorAndDefaultFields(t *testing.T) {
 func ExampleLog() {
 	logger.DefaultLogger = logger.NewLogger(logger.WithOutput(os.Stdout), logger.WithTimeFormat("ddd"))
 	log.Info("test show info")
-	log.Infof("test show infof: name: %s, age: %d", "sumo", 99)
+	log.Infof("test show infof: name: %s, age: %d", "sumo-1", 100)
 	log.WithFields(map[string]interface{}{
 		"name":  "sumo",
 		"age":   99,
 		"alive": true,
 	}).Info("test show fields")
 	// Output:
-	//{"level":"info","message":"test show info: msg true 45.65","time":"ddd"}
-	//{"level":"info","message":"test show infof: name: sumo, age: 99","time":"ddd"}
+	//{"level":"info","message":"test show info","time":"ddd"}
+	//{"level":"info","message":"test show infof: name: sumo-1, age: 100","time":"ddd"}
 	//{"age":99,"alive":true,"level":"info","message":"test show fields","name":"sumo","time":"ddd"}
 }
