@@ -8,21 +8,18 @@ import (
 )
 
 type zerologRecord struct {
-	*zerolog.Event
+	*zerolog.Logger
+	fields map[string]interface{}
+	err error
 }
 
 func (r *zerologRecord) Log(level logger.Level, args ...interface{}) {
-	if r.Event.Enabled()  {
-		r.Event.Str(zerolog.LevelFieldName, zerolog.LevelFieldMarshalFunc(loggerToZerologLevel(level)))
-		r.Event.Msg(fmt.Sprint(args...))
-	}
+	r.Logger.WithLevel(loggerToZerologLevel(level)).Fields(r.fields).Err(r.err).Msg(fmt.Sprint(args...))
+	// Should we use object pool to avoid allocation?
 }
 
 func (r *zerologRecord) Logf(level logger.Level, format string, args ...interface{}) {
-	if r.Event.Enabled() {
-		r.Event.Str(zerolog.LevelFieldName, zerolog.LevelFieldMarshalFunc(loggerToZerologLevel(level)))
-		r.Event.Msgf(format, args...)
-	}
+	r.Logger.WithLevel(loggerToZerologLevel(level)).Fields(r.fields).Err(r.err).Msgf(format, args...)
 }
 
 func (r *zerologRecord) Trace(args ...interface{}) {

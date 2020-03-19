@@ -40,7 +40,7 @@ func ExampleWithOut() {
 	// Output:
 	// {"level":"info","time":"ddd","message":"testing: Info"}
 	// {"level":"info","time":"ddd","message":"testing: Infof"}
-	// {"level":"warn","age":99,"human":true,"sumo":"demo","time":"ddd","message":"testing: Infow"}
+	// {"level":"warn","age":99,"human":true,"sumo":"demo","time":"ddd","message":"testing: Warn"}
 }
 
 func ExampleWithGcp() {
@@ -61,8 +61,8 @@ func ExampleWithGcp() {
 	// Output:
 	//{"severity":"Info","timestamp":"aaa","message":"testing: Info"}
 	//{"severity":"Info","timestamp":"aaa","message":"testing: Infof"}
-	//{"severity":"Info","age":99,"human":true,"sumo":"demo","timestamp":"aaa","message":"testing: Infow"}
-	//{"severity":"Error","error":"Error nested: root error message","timestamp":"aaa","logging.googleapis.com/sourceLocation":{"file":"zerolog.go","line":"167","function":"github.com/xmlking/logger/zerolog.(*zeroLogger).Error"},"message":"TestWithGCPModeAndWithError"}
+	//{"severity":"Info","age":99,"human":true,"sumo":"demo","timestamp":"aaa","message":"testing: Info with fields"}
+	//{"severity":"Error","error":"Error nested: root error message","timestamp":"aaa","logging.googleapis.com/sourceLocation":{"file":"record.go","line":"17","function":"github.com/xmlking/logger/zerolog.(*zerologRecord).Log"},"message":"TestWithGCPModeAndWithError"}
 }
 
 func TestSetLevel(t *testing.T) {

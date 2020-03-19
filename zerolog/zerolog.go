@@ -145,22 +145,11 @@ func (l *zeroLogger) Options() logger.Options {
 }
 
 func (l *zeroLogger) WithFields(fields map[string]interface{}) logger.Record {
-	// Adding seed fields if exist
-	if l.opts.Fields != nil {
-		return &zerologRecord{l.Logger.WithLevel(zerolog.NoLevel).Fields(fields)}
-	} else {
-		return &zerologRecord{l.Logger.WithLevel(zerolog.NoLevel).Fields(fields)}
-	}
-
+	return &zerologRecord{l.Logger, fields, nil}
 }
 
 func (l *zeroLogger) WithError(err error) logger.Record {
-	// Adding seed fields if exist
-	if l.opts.Fields != nil {
-		return &zerologRecord{l.Logger.WithLevel(zerolog.NoLevel).Err(err)}
-	} else {
-		return &zerologRecord{l.Logger.WithLevel(zerolog.NoLevel).Err(err)}
-	}
+	return &zerologRecord{l.Logger, nil, err}
 }
 
 func (l *zeroLogger) Log(level logger.Level, args ...interface{}) {
