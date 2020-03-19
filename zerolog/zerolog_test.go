@@ -32,15 +32,15 @@ func ExampleWithOut() {
 	)
 	log.Info("testing: Info")
 	log.Infof("testing: %s", "Infof")
-	log.Infow("testing: Infow", map[string]interface{}{
+	log.WithFields(map[string]interface{}{
 		"sumo":  "demo",
 		"human": true,
 		"age":   99,
-	})
+	}).Warn("testing: ", "Warn")
 	// Output:
 	// {"level":"info","time":"ddd","message":"testing: Info"}
 	// {"level":"info","time":"ddd","message":"testing: Infof"}
-	// {"level":"info","age":99,"human":true,"sumo":"demo","time":"ddd","message":"testing: Infow"}
+	// {"level":"warn","age":99,"human":true,"sumo":"demo","time":"ddd","message":"testing: Infow"}
 }
 
 func ExampleWithGcp() {
@@ -51,13 +51,13 @@ func ExampleWithGcp() {
 	)
 	log.Info("testing: Info")
 	log.Infof("testing: %s", "Infof")
-	log.Infow("testing: Infow", map[string]interface{}{
+	log.WithFields(map[string]interface{}{
 		"sumo":  "demo",
 		"human": true,
 		"age":   99,
-	})
+	}).Info("testing: Info with fields")
 	logger.DefaultLogger.Init(ReportCaller())
-	log.Errorw("TestWithGCPModeAndWithError", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+	log.WithError(fmt.Errorf("Error %v: %w", "nested", errors.New("root error message"))).Error("TestWithGCPModeAndWithError")
 	// Output:
 	//{"severity":"Info","timestamp":"aaa","message":"testing: Info"}
 	//{"severity":"Info","timestamp":"aaa","message":"testing: Infof"}
@@ -68,10 +68,10 @@ func ExampleWithGcp() {
 func TestSetLevel(t *testing.T) {
 	logger.DefaultLogger = NewLogger()
 
-	logger.SetLevel(logger.DebugLevel)
+	log.SetLevel(logger.DebugLevel)
 	log.Debugf("test show debug: %s", "debug msg")
 
-	logger.SetLevel(logger.InfoLevel)
+	log.SetLevel(logger.InfoLevel)
 	log.Debugf("test non-show debug: %s", "debug msg")
 }
 
@@ -92,14 +92,14 @@ func TestWithGCPMode(t *testing.T) {
 
 	log.Info("testing: TestWithGCPMode Info")
 	log.Infof("testing: %s", "TestWithGCPMode Infof")
-	log.Infow("testing: TestWithGCPMode Infow", map[string]interface{}{
+	log.WithFields(map[string]interface{}{
 		"sumo":  "demo",
 		"human": true,
 		"age":   99,
-	})
+	}).Info("testing: TestWithGCPMode Infow")
 
 	logger.DefaultLogger.Init(ReportCaller())
-	log.Errorw("TestWithGCPModeAndWithError", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+	log.WithError(fmt.Errorf("Error %v: %w", "nested", errors.New("root error message"))).Info("TestWithGCPModeAndWithError")
 	logger.DefaultLogger.Init(logger.WithTimeFormat(time.RFC3339Nano))
 	log.Infof("testing: %s", "TestWithGCPMode")
 	// reset `LevelFieldName` to make other tests pass.
@@ -119,11 +119,11 @@ func TestSubLoggerWithMoreFields(t *testing.T) {
 		"component": "AccountHandler",
 	}))
 
-	log.Infow("testing: Infow with extra fields", map[string]interface{}{
+	log.WithFields(map[string]interface{}{
 		"name":  "demo",
 		"human": true,
 		"age":   77,
-	})
+	}).Debug("testing: Infow with extra fields")
 	log.Infof("testing: %s", "Infof with default fields")
 	// Output:
 	//{"level":"info","component":"AccountHandler","age":77,"human":true,"name":"demo","time":"2020-02-23T12:01:10-08:00","message":"testing: Infow with extra fields"}
@@ -134,7 +134,7 @@ func TestWithError(t *testing.T) {
 	logger.DefaultLogger = NewLogger()
 	log.Error("TestWithError")
 	log.Errorf("testing: %s", "TestWithError")
-	log.Errorw("TestWithError", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+	log.WithError(fmt.Errorf("Error %v: %w", "nested", errors.New("root error message"))).Error("TestWithError")
 }
 
 func TestWithErrorAndDefaultFields(t *testing.T) {
@@ -145,7 +145,7 @@ func TestWithErrorAndDefaultFields(t *testing.T) {
 	}))
 	log.Error("TestWithErrorAndDefaultFields")
 	log.Errorf("testing: %s", "TestWithErrorAndDefaultFields")
-	log.Errorw("TestWithErrorAndDefaultFields", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+	log.WithError(fmt.Errorf("Error %v: %w", "nested", errors.New("root error message"))).Error("TestWithErrorAndDefaultFields")
 }
 
 func TestWithHooks(t *testing.T) {
