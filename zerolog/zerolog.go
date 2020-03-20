@@ -153,8 +153,7 @@ func (l *zeroLogger) WithError(err error) logger.Record {
 }
 
 func (l *zeroLogger) Log(level logger.Level, args ...interface{}) {
-	msg := fmt.Sprint(args...)
-	l.Logger.WithLevel(loggerToZerologLevel(level)).Msg(msg)
+	l.Logger.WithLevel(loggerToZerologLevel(level)).Msg(fmt.Sprint(args...))
 	// Invoke os.Exit because unlike zerolog.Logger.Fatal zerolog.Logger.WithLevel won't stop the execution.
 	if level == logger.FatalLevel {
 		l.opts.ExitFunc(1)
