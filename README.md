@@ -3,6 +3,8 @@
 Logger provides a simple facade over most popular logging systems for __GoLang__, allowing you to log in your application without vendor lock-in.
 Think SLF4J for GoLang.
 
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/xmlking/logger.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xmlking/logger/alerts/)
+[![Language grade: Go](https://img.shields.io/lgtm/grade/go/g/xmlking/logger.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xmlking/logger/context:go)
 
 ## Usage
 
