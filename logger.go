@@ -68,14 +68,13 @@ func (l *defaultLogger) WithFields(fields map[string]interface{}) Record {
 
 func (l *defaultLogger) WithError(err error) Record {
 	l.RLock()
-	fields := MergeMaps(l.opts.Fields)
+	fields := MergeMaps(l.opts.Fields, map[string]interface{}{"error": err.Error()})
 	l.RUnlock()
 
 	return &defaultRecord{
 		opts:   l.opts,
 		level:  l.opts.Level,
 		fields: fields,
-		err:    err,
 	}
 }
 

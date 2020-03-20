@@ -13,24 +13,23 @@ import (
   "github.com/xmlking/logger/zerolog"
 )
 
-func ExampleWithOut() {
+func ExampleLog() {
 	logger.DefaultLogger = zerolog.NewLogger(
 		logger.WithOutput(os.Stdout),
 		logger.WithTimeFormat("ddd"),
 		zerolog.WithProductionMode(),
 	)
-
-	log.Info("testing: Info")
-	log.Infof("testing: %s", "Infof")
-	log.Infow("testing: Infow", map[string]interface{}{
-		"sumo":  "demo",
-		"human": true,
+	log.Info("test show info: ", "msg ", true, 45.65)
+	log.Infof("test show infof: name: %s, age: %d", "sumo", 99)
+	log.WithFields(map[string]interface{}{
+		"name":  "sumo",
 		"age":   99,
-	})
+		"alive": true,
+	}).Info("test show fields")
 	// Output:
-	// {"level":"info","time":"ddd","message":"testing: Info"}
-	// {"level":"info","time":"ddd","message":"testing: Infof"}
-	// {"level":"info","age":99,"human":true,"sumo":"demo","time":"ddd","message":"testing: Infow"}
+	// {"level":"info","time":"ddd","message":"test show info: msg true 45.65"}
+	// {"level":"info","time":"ddd","message":"test show infof: name: sumo, age: 99"}
+	// {"level":"info","age":99,"alive":true,"name":"sumo","time":"ddd","message":"test show fields"}
 }
 ```
 
@@ -53,17 +52,17 @@ func ExampleWithGcp() {
 
 	log.Info("testing: Info")
 	log.Infof("testing: %s", "Infof")
-	log.Infow("testing: Infow", map[string]interface{}{
-		"sumo":  "demo",
-		"human": true,
+	log.WithFields(map[string]interface{}{
+		"name":  "sumo",
 		"age":   99,
-	})
+		"alive": true,
+	}).Info("testing: with fields")
 	logger.DefaultLogger.Init(ReportCaller())
-	log.Errorw("TestWithGCPModeAndWithError", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+	log.WithError(fmt.Errorf("Error %v: %w", "nested", errors.New("root error message"))).Error("TestWithGCPModeAndWithError")
 	// Output:
 	//{"severity":"Info","timestamp":"aaa","message":"testing: Info"}
 	//{"severity":"Info","timestamp":"aaa","message":"testing: Infof"}
-	//{"severity":"Info","age":99,"human":true,"sumo":"demo","timestamp":"aaa","message":"testing: Infow"}
+	//{"severity":"Info","age":99,"human":true,"sumo":"demo","timestamp":"aaa","message":"testing: with fields"}
 	//{"severity":"Error","error":"Error nested: root error message","timestamp":"aaa","logging.googleapis.com/sourceLocation":{"file":"zerolog.go","line":"170","function":"github.com/xmlking/logger/zerolog.(*zeroLogger).Error"},"message":"TestWithGCPModeAndWithError"}
 }
 

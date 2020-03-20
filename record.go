@@ -38,7 +38,6 @@ type defaultRecord struct {
 	opts   Options
 	level  Level
 	fields map[string]interface{}
-	err    error
 }
 
 func (l *defaultRecord) Log(level Level, args ...interface{}) {
