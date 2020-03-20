@@ -215,27 +215,6 @@ func loggerToZerologLevel(level logger.Level) zerolog.Level {
 	}
 }
 
-func ZerologToLoggerLevel(level zerolog.Level) logger.Level {
-	switch level {
-	case zerolog.TraceLevel:
-		return logger.TraceLevel
-	case zerolog.DebugLevel:
-		return logger.DebugLevel
-	case zerolog.InfoLevel:
-		return logger.InfoLevel
-	case zerolog.WarnLevel:
-		return logger.WarnLevel
-	case zerolog.ErrorLevel:
-		return logger.ErrorLevel
-	case zerolog.PanicLevel:
-		return logger.PanicLevel
-	case zerolog.FatalLevel:
-		return logger.FatalLevel
-	default:
-		return logger.InfoLevel
-	}
-}
-
 func contains(hooks []zerolog.Hook, elem zerolog.Hook) bool {
 	for _, hook := range hooks {
 		if hook == elem {
