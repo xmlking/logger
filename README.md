@@ -102,8 +102,10 @@ git add .
 git flow release start v0.1.0
 # on release branch
 git-chglog -c .github/chglog/config.yml -o CHANGELOG.md --next-tag v0.1.0
+# update `github.com/xmlking/logger` version in each `go.mod` file.
+# commit all changes.
 # finish release on release branch
-git flow release finish v0.1.0
+git flow release finish
 # on master branch, (gpoat = git push origin --all && git push origin --tags)
 gpoat
 # add git tags for sub-modules
