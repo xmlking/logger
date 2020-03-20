@@ -2,6 +2,7 @@ package zerolog
 
 import (
 	"fmt"
+
 	"github.com/rs/zerolog"
 
 	"github.com/xmlking/logger"
