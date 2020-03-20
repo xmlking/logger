@@ -28,11 +28,11 @@ func TestWithFields(t *testing.T) {
 
 	log.Info("testing: Info")
 	log.Infof("testing: %s", "Infof")
-	log.Infow("testing: Infow", map[string]interface{}{
+	log.WithFields(map[string]interface{}{
 		"sumo":  "demo",
 		"human": true,
 		"age":   99,
-	})
+	}).Info("testing: Info with fields")
 }
 
 func TestJSON(t *testing.T) {
@@ -43,12 +43,15 @@ func TestJSON(t *testing.T) {
 
 func TestSetLevel(t *testing.T) {
 	logger.DefaultLogger = NewLogger()
-
-	logger.SetLevel(logger.DebugLevel)
+	log.SetLevel(logger.DebugLevel)
 	log.Debugf("test show debug: %s", "debug msg")
 
-	logger.SetLevel(logger.InfoLevel)
+	log.SetLevel(logger.InfoLevel)
 	log.Debugf("test non-show debug: %s", "debug msg")
+
+	t.Cleanup(func() {
+		log.SetLevel(logger.InfoLevel)
+	})
 }
 
 func TestWithReportCaller(t *testing.T) {
@@ -57,28 +60,28 @@ func TestWithReportCaller(t *testing.T) {
 	log.Infof("testing: %s", "WithReportCaller")
 }
 
+func TestWithError(t *testing.T) {
+	logger.DefaultLogger = NewLogger()
+	log.Error("testing: Error")
+	log.Errorf("testing: %s", "Errorf")
+	log.WithError(fmt.Errorf("Error %v: %w", "nested", errors.New("root error message"))).Error("TestWithError")
+}
+
 func TestWithDefaultFields(t *testing.T) {
 	logger.DefaultLogger = NewLogger(WithJSONFormatter(&logrus.JSONFormatter{}),
 		logger.WithFields(map[string]interface{}{
 			"component": "AccountHandler",
 		}))
 
-	log.Infow("testing: Infow with extra fields", map[string]interface{}{
+	log.WithFields(map[string]interface{}{
 		"name":  "demo",
 		"human": true,
 		"age":   77,
-	})
+	}).Info("testing: Info with extra fields")
 	log.Infof("testing: %s", "Infof with default fields")
 	// Output:
-	//{"age":77,"component":"AccountHandler","human":true,"level":"info","msg":"testing: Infow with extra fields","name":"demo","time":"2020-02-23T11:56:51-08:00"}
-	//{"component":"AccountHandler","level":"info","msg":"testing: Infof with default fields","time":"2020-02-23T11:56:51-08:00"}
-}
-
-func TestWithError(t *testing.T) {
-	logger.DefaultLogger = NewLogger()
-	log.Error("TestWithError")
-	log.Errorf("testing: %s", "TestWithError")
-	log.Errorw("TestWithError", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+	//{"age":77,"component":"AccountHandler","human":true,"level":"info","msg":"testing: Info with extra fields","name":"demo","time":"2020-03-15T15:07:51-07:00"}
+	//{"component":"AccountHandler","level":"info","msg":"testing: Infof with default fields","time":"2020-03-15T15:07:51-07:00"}
 }
 
 func TestWithErrorAndDefaultFields(t *testing.T) {
@@ -87,7 +90,11 @@ func TestWithErrorAndDefaultFields(t *testing.T) {
 		"age":   99,
 		"alive": true,
 	}))
-	log.Error("TestWithErrorAndDefaultFields")
-	log.Errorf("testing: %s", "TestWithErrorAndDefaultFields")
-	log.Errorw("TestWithErrorAndDefaultFields", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+	log.Errorf("testing: %s", "ErrorfWithDefaultFields")
+	log.WithError(fmt.Errorf("Error %v: %w", "nested", errors.New("root error message"))).Error("testing: Error with default fields")
+	log.WithError(errors.New("root error message")).Errorf("testing: %s", "Errorf with default fields")
+	// Output:
+	//time="2020-03-15T15:11:50-07:00" level=error msg="testing: ErrorfWithDefaultFields" age=99 alive=true name=sumo
+	//time="2020-03-15T15:11:50-07:00" level=error msg="testing: Error with default fields" age=99 alive=true error="Error nested: root error message" name=sumo
+	//time="2020-03-15T15:11:50-07:00" level=error msg="testing: Errorf with default fields" age=99 alive=true error="root error message" name=sumo
 }

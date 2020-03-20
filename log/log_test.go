@@ -21,10 +21,10 @@ func TestName(t *testing.T) {
 }
 
 func TestSetLevel(t *testing.T) {
-	logger.SetLevel(logger.DebugLevel)
+	log.SetLevel(logger.DebugLevel)
 	log.Debugf("test show debug: %s", "debug msg")
 
-	logger.SetLevel(logger.InfoLevel)
+	log.SetLevel(logger.InfoLevel)
 	log.Debugf("test non-show debug: %s", "debug msg")
 }
 
@@ -35,7 +35,7 @@ func TestSubLogger(t *testing.T) {
 		"age":   99,
 		"alive": true,
 	}))
-	subLogger.Log(logger.WarnLevel, "Logging with subLogger Options: %v", []interface{}{subLogger.Options()}, nil)
+	subLogger.Logf(logger.WarnLevel, "Logging with subLogger Options: %v", []interface{}{subLogger.Options()}, nil)
 	log.Warnf("Logging with Default Options: %v", logger.DefaultLogger.Options())
 }
 
@@ -46,14 +46,14 @@ func TestWithFields(t *testing.T) {
 		"alive": true,
 	}))
 	log.Info("test with default fields")
-	log.Infow("test with extra fields", map[string]interface{}{"weight": 3.14159265359, "name": "demo"})
-	log.Infow("test with duplicate fields", map[string]interface{}{"name": "sumo1"})
+	log.WithFields(map[string]interface{}{"weight": 3.14159265359, "name": "demo"}).Info("test with extra fields")
+	log.WithFields(map[string]interface{}{"name": "sumo1"}).Info("test with duplicate fields")
 }
 
 func TestWithError(t *testing.T) {
 	log.Error("TestWithError")
 	log.Errorf("testing: %s", "TestWithError")
-	log.Errorw("TestWithError", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+	log.WithError(errors.New("error message")).Errorf("TestWithError: %s", "root error message")
 }
 
 func TestWithErrorAndDefaultFields(t *testing.T) {
@@ -64,20 +64,20 @@ func TestWithErrorAndDefaultFields(t *testing.T) {
 	}))
 	log.Error("TestWithErrorAndDefaultFields")
 	log.Errorf("testing: %s", "TestWithErrorAndDefaultFields")
-	log.Errorw("TestWithErrorAndDefaultFields", fmt.Errorf("Error %v: %w", "nested", errors.New("root error message")))
+	log.WithError(fmt.Errorf("Error %v: %w", "nested", errors.New("root error message"))).Error("TestWithErrorAndDefaultFields")
 }
 
 func ExampleLog() {
 	logger.DefaultLogger = logger.NewLogger(logger.WithOutput(os.Stdout), logger.WithTimeFormat("ddd"))
-	log.Info("test show info: ", "msg ", true, 45.65)
-	log.Infof("test show infof: name: %s, age: %d", "sumo", 99)
-	log.Infow("test show fields", map[string]interface{}{
+	log.Info("test show info")
+	log.Infof("test show infof: name: %s, age: %d", "sumo-1", 100)
+	log.WithFields(map[string]interface{}{
 		"name":  "sumo",
 		"age":   99,
 		"alive": true,
-	})
+	}).Info("test show fields")
 	// Output:
-	//{"level":"info","message":"test show info: msg true 45.65","time":"ddd"}
-	//{"level":"info","message":"test show infof: name: sumo, age: 99","time":"ddd"}
+	//{"level":"info","message":"test show info","time":"ddd"}
+	//{"level":"info","message":"test show infof: name: sumo-1, age: 100","time":"ddd"}
 	//{"age":99,"alive":true,"level":"info","message":"test show fields","name":"sumo","time":"ddd"}
 }

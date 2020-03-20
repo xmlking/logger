@@ -1,75 +1,69 @@
+// Package `log` provides default logger's public API
 package log
 
 import (
 	"github.com/xmlking/logger"
 )
 
+func WithFields(fields map[string]interface{}) logger.Record {
+	return logger.DefaultLogger.WithFields(fields)
+}
+func WithError(err error) logger.Record {
+	return logger.DefaultLogger.WithError(err)
+}
+
+// Set DefaultLogger Level
+func SetLevel(lvl logger.Level) {
+	if err := logger.DefaultLogger.Init(logger.WithLevel(lvl)); err != nil {
+		print(err)
+	}
+}
+
+// Get DefaultLogger name
+func String() string {
+	return logger.DefaultLogger.String()
+}
+
+// Sugar methods
 func Trace(args ...interface{}) {
-	logger.Log(logger.TraceLevel, "", args, nil)
+	logger.DefaultLogger.Log(logger.TraceLevel, args...)
 }
-func Tracef(template string, args ...interface{}) {
-	logger.Log(logger.TraceLevel, template, args, nil)
+func Tracef(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.TraceLevel, format, args...)
 }
-func Tracew(msg string, fields map[string]interface{}) {
-	logger.Log(logger.TraceLevel, msg, nil, fields)
-}
-
 func Debug(args ...interface{}) {
-	logger.Log(logger.DebugLevel, "", args, nil)
+	logger.DefaultLogger.Log(logger.DebugLevel, args...)
 }
-func Debugf(template string, args ...interface{}) {
-	logger.Log(logger.DebugLevel, template, args, nil)
+func Debugf(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.DebugLevel, format, args...)
 }
-func Debugw(msg string, fields map[string]interface{}) {
-	logger.Log(logger.DebugLevel, msg, nil, fields)
-}
-
 func Info(args ...interface{}) {
-	logger.Log(logger.InfoLevel, "", args, nil)
+	logger.DefaultLogger.Log(logger.InfoLevel, args...)
 }
-func Infof(template string, args ...interface{}) {
-	logger.Log(logger.InfoLevel, template, args, nil)
+func Infof(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.InfoLevel, format, args...)
 }
-func Infow(msg string, fields map[string]interface{}) {
-	logger.Log(logger.InfoLevel, msg, nil, fields)
-}
-
 func Warn(args ...interface{}) {
-	logger.Log(logger.WarnLevel, "", args, nil)
+	logger.DefaultLogger.Log(logger.WarnLevel, args...)
 }
-func Warnf(template string, args ...interface{}) {
-	logger.Log(logger.WarnLevel, template, args, nil)
+func Warnf(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.WarnLevel, format, args...)
 }
-func Warnw(msg string, fields map[string]interface{}) {
-	logger.Log(logger.WarnLevel, msg, nil, fields)
-}
-
 func Error(args ...interface{}) {
-	logger.Log(logger.ErrorLevel, "", args, nil)
+	logger.DefaultLogger.Log(logger.ErrorLevel, args...)
 }
-func Errorf(template string, args ...interface{}) {
-	logger.Log(logger.ErrorLevel, template, args, nil)
+func Errorf(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.ErrorLevel, format, args...)
 }
-func Errorw(msg string, err error) {
-	logger.Error(logger.ErrorLevel, msg, nil, err)
-}
-
 func Panic(args ...interface{}) {
-	logger.Log(logger.PanicLevel, "", args, nil)
+	logger.DefaultLogger.Log(logger.PanicLevel, args...)
 }
-func Panicf(template string, args ...interface{}) {
-	logger.Log(logger.PanicLevel, template, args, nil)
+func Panicf(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.PanicLevel, format, args...)
 }
-func Panicw(msg string, fields map[string]interface{}) {
-	logger.Log(logger.PanicLevel, msg, nil, fields)
-}
-
 func Fatal(args ...interface{}) {
-	logger.Log(logger.FatalLevel, "", args, nil)
+	logger.DefaultLogger.Log(logger.FatalLevel, args...)
 }
-func Fatalf(template string, args ...interface{}) {
-	logger.Log(logger.FatalLevel, template, args, nil)
-}
-func Fatalw(msg string, fields map[string]interface{}) {
-	logger.Log(logger.FatalLevel, msg, nil, fields)
+func Fatalf(format string, args ...interface{}) {
+	logger.DefaultLogger.Logf(logger.FatalLevel, format, args...)
 }

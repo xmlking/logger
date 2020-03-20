@@ -12,8 +12,7 @@ import (
 )
 
 type zaplog struct {
-	cfg  zap.Config
-	zap  *zap.Logger
+	*zap.Logger
 	opts logger.Options
 }
 
@@ -40,18 +39,14 @@ func (l *zaplog) Init(opts ...logger.Option) error {
 		zapConfig.Level.SetLevel(loggerToZapLevel(l.opts.Level))
 	}
 
+	// Adding seed fields if exist
+	if l.opts.Fields != nil {
+		zapConfig.InitialFields = l.opts.Fields
+	}
+
 	log, err := zapConfig.Build()
 	if err != nil {
 		return err
-	}
-
-	// Adding seed fields if exist
-	if l.opts.Fields != nil {
-		data := []zap.Field{}
-		for k, v := range l.opts.Fields {
-			data = append(data, zap.Any(k, v))
-		}
-		log = log.With(data...)
 	}
 
 	// Adding namespace
@@ -60,62 +55,41 @@ func (l *zaplog) Init(opts ...logger.Option) error {
 	}
 
 	// defer log.Sync() ??
-
-	l.cfg = zapConfig
-	l.zap = log
+	l.Logger = log
 
 	return nil
 }
 
-func (l *zaplog) Log(level logger.Level, template string, fmtArgs []interface{}, fields map[string]interface{}) {
-	lvl := loggerToZapLevel(level)
-	if lvl < zapcore.DPanicLevel && !l.zap.Core().Enabled(lvl) {
-		return
-	}
-
-	// Format with Sprint, Sprintf, or neither.
-	msg := template
-	if msg == "" && len(fmtArgs) > 0 {
-		msg = fmt.Sprint(fmtArgs...)
-	} else if msg != "" && len(fmtArgs) > 0 {
-		msg = fmt.Sprintf(template, fmtArgs...)
-	}
-
-	if ce := l.zap.Check(lvl, msg); ce != nil {
-		data := []zap.Field{}
-		for k, v := range fields {
-			data = append(data, zap.Any(k, v))
-		}
-		ce.Write(data...)
-	}
-
+func (l *zaplog) Options() logger.Options {
+	return l.opts
 }
 
-func (l *zaplog) Error(level logger.Level, template string, fmtArgs []interface{}, err error) {
+func (l *zaplog) WithFields(fields map[string]interface{}) logger.Record {
+	return &zapRecord{l.Logger, fields}
+}
+
+func (l *zaplog) WithError(err error) logger.Record {
+	return &zapRecord{l.Logger, map[string]interface{}{"error": err}}
+}
+
+func (l *zaplog) Log(level logger.Level, args ...interface{}) {
 	lvl := loggerToZapLevel(level)
-	if lvl < zapcore.DPanicLevel && !l.zap.Core().Enabled(lvl) {
-		return
+	msg := fmt.Sprint(args...)
+	if ce := l.Logger.Check(lvl, msg); ce != nil {
+		ce.Write()
 	}
+}
 
-	// Format with Sprint, Sprintf, or neither.
-	msg := template
-	if msg == "" && len(fmtArgs) > 0 {
-		msg = fmt.Sprint(fmtArgs...)
-	} else if msg != "" && len(fmtArgs) > 0 {
-		msg = fmt.Sprintf(template, fmtArgs...)
-	}
-
-	if ce := l.zap.Check(lvl, msg); ce != nil {
-		ce.Write(zap.Error(err))
+func (l *zaplog) Logf(level logger.Level, format string, args ...interface{}) {
+	lvl := loggerToZapLevel(level)
+	msg := fmt.Sprintf(format, args...)
+	if ce := l.Logger.Check(lvl, msg); ce != nil {
+		ce.Write()
 	}
 }
 
 func (l *zaplog) String() string {
 	return "zap"
-}
-
-func (l *zaplog) Options() logger.Options {
-	return l.opts
 }
 
 // New builds a new logger based on options
@@ -152,24 +126,5 @@ func loggerToZapLevel(level logger.Level) zapcore.Level {
 		return zap.FatalLevel
 	default:
 		return zap.InfoLevel
-	}
-}
-
-func zapToLoggerLevel(level zapcore.Level) logger.Level {
-	switch level {
-	case zap.DebugLevel:
-		return logger.DebugLevel
-	case zap.InfoLevel:
-		return logger.InfoLevel
-	case zap.WarnLevel:
-		return logger.WarnLevel
-	case zap.ErrorLevel:
-		return logger.ErrorLevel
-	case zap.PanicLevel:
-		return logger.PanicLevel
-	case zap.FatalLevel:
-		return logger.FatalLevel
-	default:
-		return logger.InfoLevel
 	}
 }

@@ -10,11 +10,11 @@ Import dependencies. Use latest version.
 
 ```go
 import (
-	github.com/xmlking/logger v0.1.2
+	github.com/xmlking/logger v0.1.4
     // required: your choice of logger plugins
-	github.com/xmlking/logger/zerolog v0.1.2
+	github.com/xmlking/logger/zerolog v0.1.4
     //optional: gormlog
-	github.com/xmlking/logger/gormlog v0.1.2
+	github.com/xmlking/logger/gormlog v0.1.4
 
 )
 ```
@@ -27,15 +27,17 @@ func ExampleLog() {
 
 	log.Info("test show info: ", "msg ", true, 45.65)
 	log.Infof("test show infof: name: %s, age: %d", "sumo", 99)
-	log.Infow("test show fields", map[string]interface{}{
+	log.WithFields(map[string]interface{}{
 		"name":  "sumo",
 		"age":   99,
 		"alive": true,
-	})
+	}).Info("test show fields")
+	log.WithError(errors.New("error message")).Errorf("Testing: %s", "WithError")
 	// Output:
-	// {"level":"info","time":"ddd","message":"test show info: msg true 45.65"}
-	// {"level":"info","time":"ddd","message":"test show infof: name: sumo, age: 99"}
-	// {"level":"info","age":99,"alive":true,"name":"sumo","time":"ddd","message":"test show fields"}
+	//{"level":"info","message":"test show info: msg true 45.65","time":"ddd"}
+	//{"level":"info","message":"test show infof: name: sumo, age: 99","time":"ddd"}
+	//{"age":99,"alive":true,"level":"info","message":"test show fields","name":"sumo","time":"ddd"}
+	//{"error":"error message","level":"error","message":"Testing: WithError","time":"ddd"}
 }
 ```
 
@@ -51,15 +53,15 @@ func ExampleWithFields() {
 
 	log.Info("testing: Info")
 	log.Infof("testing: %s", "Infof")
-	log.Infow("testing: Infow", map[string]interface{}{
-		"sumo":  "demo",
-		"human": true,
+	log.WithFields(map[string]interface{}{
+		"name":  "sumo",
 		"age":   99,
-	})
+		"alive": true,
+	}).Info("testing: with fields")
 	// Output:
 	// {"level":"info","time":"ddd","message":"testing: Info"}
 	// {"level":"info","time":"ddd","message":"testing: Infof"}
-	// {"level":"info","age":99,"human":true,"sumo":"demo","time":"ddd","message":"testing: Infow"}
+	// {"level":"info","age":99,"human":true,"sumo":"demo","time":"ddd","message":"testing: with fields"}
 }
 ```
 

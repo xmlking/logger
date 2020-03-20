@@ -65,7 +65,7 @@ func NewGormLogger(origin logger.Logger, opts ...GormLoggerOption) *GormLogger {
 // Print implements gorm's logger interface.
 func (l *GormLogger) Print(values ...interface{}) {
 	rec := l.newRecord(values...)
-	l.origin.Log(rec.Level, rec.Message, nil, l.encoderFunc(rec))
+	l.origin.WithFields(l.encoderFunc(rec)).Log(rec.Level, rec.Message)
 }
 
 func (l *GormLogger) newRecord(values ...interface{}) Record {
