@@ -87,6 +87,7 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 		zerolog.LevelFieldName = "severity"
 		zerolog.LevelFieldMarshalFunc = LevelToSeverity
 		//l.opts.Hooks = append(l.opts.Hooks, StackdriverSeverityHook{})
+		zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 
 		logr = zerolog.New(l.opts.Out).
 			Level(zerolog.InfoLevel).
@@ -114,7 +115,6 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 		} else {
 			logr = logr.With().Caller().Logger()
 		}
-
 	}
 	for _, hook := range l.opts.Hooks {
 		logr = logr.Hook(hook)

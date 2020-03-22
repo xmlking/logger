@@ -113,3 +113,7 @@ gpoat
 # add git tags for sub-modules
 make release TAG=v0.1.0
 ```
+
+### Reference
+- [How Zap Package is Optimized](https://medium.com/a-journey-with-go/go-how-zap-package-is-optimized-dbf72ef48f2d)
+- [zapdriver for Stackdriver logging](https://github.com/blendle/zapdriver)

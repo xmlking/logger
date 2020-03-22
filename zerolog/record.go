@@ -12,15 +12,31 @@ type zerologRecord struct {
 	*zerolog.Logger
 	fields map[string]interface{}
 	err error
-}
-
-func (r *zerologRecord) Log(level logger.Level, args ...interface{}) {
-	r.Logger.WithLevel(loggerToZerologLevel(level)).Fields(r.fields).Err(r.err).Msg(fmt.Sprint(args...))
 	// Should we use object pool to avoid allocation?
 }
 
+func (r *zerologRecord) Log(level logger.Level, args ...interface{}) {
+	if e := r.Logger.WithLevel(loggerToZerologLevel(level)); e != nil {
+		if r.fields != nil {
+			e = e.Fields(r.fields)
+		}
+		if r.err != nil {
+			e = e.Stack().Err(r.err) // FIXME https://github.com/rs/zerolog/issues/129#issuecomment-602122214
+		}
+		e.Msg(fmt.Sprint(args...))
+	}
+}
+
 func (r *zerologRecord) Logf(level logger.Level, format string, args ...interface{}) {
-	r.Logger.WithLevel(loggerToZerologLevel(level)).Fields(r.fields).Err(r.err).Msgf(format, args...)
+	if e := r.Logger.WithLevel(loggerToZerologLevel(level)); e != nil {
+		if r.fields != nil {
+			e = e.Fields(r.fields)
+		}
+		if r.err != nil {
+			e = e.Stack().Err(r.err) // FIXME https://github.com/rs/zerolog/issues/129#issuecomment-602122214
+		}
+		e.Msgf(format, args...)
+	}
 }
 
 func (r *zerologRecord) Trace(args ...interface{}) {
