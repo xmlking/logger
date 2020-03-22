@@ -87,6 +87,7 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 		zerolog.LevelFieldName = "severity"
 		zerolog.LevelFieldMarshalFunc = LevelToSeverity
 		//l.opts.Hooks = append(l.opts.Hooks, StackdriverSeverityHook{})
+		zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 
 		logr = zerolog.New(l.opts.Out).
 			Level(zerolog.InfoLevel).
@@ -114,7 +115,6 @@ func (l *zeroLogger) Init(opts ...logger.Option) error {
 		} else {
 			logr = logr.With().Caller().Logger()
 		}
-
 	}
 	for _, hook := range l.opts.Hooks {
 		logr = logr.Hook(hook)
@@ -153,8 +153,7 @@ func (l *zeroLogger) WithError(err error) logger.Record {
 }
 
 func (l *zeroLogger) Log(level logger.Level, args ...interface{}) {
-	msg := fmt.Sprint(args...)
-	l.Logger.WithLevel(loggerToZerologLevel(level)).Msg(msg)
+	l.Logger.WithLevel(loggerToZerologLevel(level)).Msg(fmt.Sprint(args...))
 	// Invoke os.Exit because unlike zerolog.Logger.Fatal zerolog.Logger.WithLevel won't stop the execution.
 	if level == logger.FatalLevel {
 		l.opts.ExitFunc(1)
@@ -213,27 +212,6 @@ func loggerToZerologLevel(level logger.Level) zerolog.Level {
 		return zerolog.FatalLevel
 	default:
 		return zerolog.InfoLevel
-	}
-}
-
-func ZerologToLoggerLevel(level zerolog.Level) logger.Level {
-	switch level {
-	case zerolog.TraceLevel:
-		return logger.TraceLevel
-	case zerolog.DebugLevel:
-		return logger.DebugLevel
-	case zerolog.InfoLevel:
-		return logger.InfoLevel
-	case zerolog.WarnLevel:
-		return logger.WarnLevel
-	case zerolog.ErrorLevel:
-		return logger.ErrorLevel
-	case zerolog.PanicLevel:
-		return logger.PanicLevel
-	case zerolog.FatalLevel:
-		return logger.FatalLevel
-	default:
-		return logger.InfoLevel
 	}
 }
 

@@ -3,6 +3,8 @@
 Logger provides a simple facade over most popular logging systems for __GoLang__, allowing you to log in your application without vendor lock-in.
 Think SLF4J for GoLang.
 
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/xmlking/logger.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xmlking/logger/alerts/)
+[![Language grade: Go](https://img.shields.io/lgtm/grade/go/g/xmlking/logger.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xmlking/logger/context:go)
 
 ## Usage
 
@@ -102,10 +104,16 @@ git add .
 git flow release start v0.1.0
 # on release branch
 git-chglog -c .github/chglog/config.yml -o CHANGELOG.md --next-tag v0.1.0
+# update `github.com/xmlking/logger` version in each `go.mod` file.
+# commit all changes.
 # finish release on release branch
-git flow release finish v0.1.0
+git flow release finish
 # on master branch, (gpoat = git push origin --all && git push origin --tags)
 gpoat
 # add git tags for sub-modules
 make release TAG=v0.1.0
 ```
+
+### Reference
+- [How Zap Package is Optimized](https://medium.com/a-journey-with-go/go-how-zap-package-is-optimized-dbf72ef48f2d)
+- [zapdriver for Stackdriver logging](https://github.com/blendle/zapdriver)

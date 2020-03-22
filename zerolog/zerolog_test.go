@@ -75,10 +75,16 @@ func TestSetLevel(t *testing.T) {
 	log.Debugf("test non-show debug: %s", "debug msg")
 }
 
-func TestWithReportCaller(t *testing.T) {
+func TestReportCaller(t *testing.T) {
 	logger.DefaultLogger = NewLogger(ReportCaller())
 
-	log.Infof("testing: %s", "WithReportCaller")
+	log.Infof("testing: %s", "ReportCaller")
+}
+
+func TestReportCallerWithDevelopmentMode(t *testing.T) {
+	logger.DefaultLogger = NewLogger(ReportCaller(), WithDevelopmentMode())
+
+	log.Infof("testing: %s", "ReportCallerWithDevelopmentMode")
 }
 
 func TestWithOutput(t *testing.T) {
@@ -138,14 +144,22 @@ func TestWithError(t *testing.T) {
 }
 
 func TestWithErrorAndDefaultFields(t *testing.T) {
-	logger.DefaultLogger = NewLogger(logger.WithFields(map[string]interface{}{
-		"name":  "sumo",
-		"age":   99,
-		"alive": true,
-	}))
+	logger.DefaultLogger = NewLogger(
+		logger.WithFields(map[string]interface{}{
+			"name":  "sumo",
+			"age":   99,
+			"alive": true,
+		}))
 	log.Error("TestWithErrorAndDefaultFields")
 	log.Errorf("testing: %s", "TestWithErrorAndDefaultFields")
-	log.WithError(fmt.Errorf("Error %v: %w", "nested", errors.New("root error message"))).Error("TestWithErrorAndDefaultFields")
+	err := errors.Wrap(errors.New("error message"), "from TestWithErrorAndDefaultFields")
+	log.WithError(err).Errorf("testing: %s", "WithErrorAndDefaultFields")
+}
+
+func TestLogStack(t *testing.T) {
+	logger.DefaultLogger = NewLogger(WithDevelopmentMode())
+	err := errors.Wrap(errors.New("error message"), "from TestLogStack")
+	log.WithError(err).Errorf("testing: %s", "LogStack")
 }
 
 func TestWithHooks(t *testing.T) {
