@@ -9,10 +9,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+<a name="v0.1.5"></a>
+## [v0.1.5] - 2020-03-21
+### Docs
+- **readme:** adding badges
+- **readme:** updated release section
+
+### Fix
+- **zerolog:** stack now printed properly
+
+### Perf
+- **zerolog:** improve perf by only executing when logger enabled
+
+### Style
+- **cleanup:** remove unused code
+- **cleanup:** remove unused code
+
+
+<a name="zap/v0.1.4"></a>
+## [zap/v0.1.4] - 2020-03-19
+
+<a name="gormlog/v0.1.4"></a>
+## [gormlog/v0.1.4] - 2020-03-19
+
+<a name="zerolog/v0.1.4"></a>
+## [zerolog/v0.1.4] - 2020-03-19
+
+<a name="logrus/v0.1.4"></a>
+## [logrus/v0.1.4] - 2020-03-19
+
 <a name="v0.1.4"></a>
 ## [v0.1.4] - 2020-03-19
 ### Chore
 - **deps:** updated deps
+- **release:** updating change logs
 
 ### Docs
 - **readme:** updated tocs
@@ -27,17 +57,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **zerolog:** updated to match to new interface
 
 
+<a name="zap/v0.1.3"></a>
+## [zap/v0.1.3] - 2020-02-26
+
 <a name="gormlog/v0.1.3"></a>
 ## [gormlog/v0.1.3] - 2020-02-26
-
-<a name="logrus/v0.1.3"></a>
-## [logrus/v0.1.3] - 2020-02-26
 
 <a name="zerolog/v0.1.3"></a>
 ## [zerolog/v0.1.3] - 2020-02-26
 
-<a name="zap/v0.1.3"></a>
-## [zap/v0.1.3] - 2020-02-26
+<a name="logrus/v0.1.3"></a>
+## [logrus/v0.1.3] - 2020-02-26
 
 <a name="v0.1.3"></a>
 ## [v0.1.3] - 2020-02-26
@@ -57,11 +87,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **zerolog:** using new t.Cleanup() from GoLang 1.14
 
 
-<a name="gormlog/v0.1.2"></a>
-## [gormlog/v0.1.2] - 2020-02-23
-
 <a name="logrus/v0.1.2"></a>
 ## [logrus/v0.1.2] - 2020-02-23
+
+<a name="gormlog/v0.1.2"></a>
+## [gormlog/v0.1.2] - 2020-02-23
 
 <a name="zerolog/v0.1.2"></a>
 ## [zerolog/v0.1.2] - 2020-02-23
@@ -143,15 +173,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **format:** fix code format
 
 
-[Unreleased]: https://github.com/xmlking/micro-starter-kit/compare/v0.1.4...HEAD
-[v0.1.4]: https://github.com/xmlking/micro-starter-kit/compare/gormlog/v0.1.3...v0.1.4
-[gormlog/v0.1.3]: https://github.com/xmlking/micro-starter-kit/compare/logrus/v0.1.3...gormlog/v0.1.3
-[logrus/v0.1.3]: https://github.com/xmlking/micro-starter-kit/compare/zerolog/v0.1.3...logrus/v0.1.3
-[zerolog/v0.1.3]: https://github.com/xmlking/micro-starter-kit/compare/zap/v0.1.3...zerolog/v0.1.3
-[zap/v0.1.3]: https://github.com/xmlking/micro-starter-kit/compare/v0.1.3...zap/v0.1.3
-[v0.1.3]: https://github.com/xmlking/micro-starter-kit/compare/gormlog/v0.1.2...v0.1.3
-[gormlog/v0.1.2]: https://github.com/xmlking/micro-starter-kit/compare/logrus/v0.1.2...gormlog/v0.1.2
-[logrus/v0.1.2]: https://github.com/xmlking/micro-starter-kit/compare/zerolog/v0.1.2...logrus/v0.1.2
+[Unreleased]: https://github.com/xmlking/micro-starter-kit/compare/v0.1.5...HEAD
+[v0.1.5]: https://github.com/xmlking/micro-starter-kit/compare/zap/v0.1.4...v0.1.5
+[zap/v0.1.4]: https://github.com/xmlking/micro-starter-kit/compare/gormlog/v0.1.4...zap/v0.1.4
+[gormlog/v0.1.4]: https://github.com/xmlking/micro-starter-kit/compare/zerolog/v0.1.4...gormlog/v0.1.4
+[zerolog/v0.1.4]: https://github.com/xmlking/micro-starter-kit/compare/logrus/v0.1.4...zerolog/v0.1.4
+[logrus/v0.1.4]: https://github.com/xmlking/micro-starter-kit/compare/v0.1.4...logrus/v0.1.4
+[v0.1.4]: https://github.com/xmlking/micro-starter-kit/compare/zap/v0.1.3...v0.1.4
+[zap/v0.1.3]: https://github.com/xmlking/micro-starter-kit/compare/gormlog/v0.1.3...zap/v0.1.3
+[gormlog/v0.1.3]: https://github.com/xmlking/micro-starter-kit/compare/zerolog/v0.1.3...gormlog/v0.1.3
+[zerolog/v0.1.3]: https://github.com/xmlking/micro-starter-kit/compare/logrus/v0.1.3...zerolog/v0.1.3
+[logrus/v0.1.3]: https://github.com/xmlking/micro-starter-kit/compare/v0.1.3...logrus/v0.1.3
+[v0.1.3]: https://github.com/xmlking/micro-starter-kit/compare/logrus/v0.1.2...v0.1.3
+[logrus/v0.1.2]: https://github.com/xmlking/micro-starter-kit/compare/gormlog/v0.1.2...logrus/v0.1.2
+[gormlog/v0.1.2]: https://github.com/xmlking/micro-starter-kit/compare/zerolog/v0.1.2...gormlog/v0.1.2
 [zerolog/v0.1.2]: https://github.com/xmlking/micro-starter-kit/compare/zap/v0.1.2...zerolog/v0.1.2
 [zap/v0.1.2]: https://github.com/xmlking/micro-starter-kit/compare/v0.1.2...zap/v0.1.2
 [v0.1.2]: https://github.com/xmlking/micro-starter-kit/compare/gormlog/v0.1.1...v0.1.2
