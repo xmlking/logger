@@ -7,5 +7,5 @@ replace github.com/xmlking/logger => ../
 require (
 	github.com/pkg/errors v0.9.1
 	github.com/xmlking/logger v0.1.5
-	go.uber.org/zap v1.14.1
+	go.uber.org/zap v1.16.0
 )
